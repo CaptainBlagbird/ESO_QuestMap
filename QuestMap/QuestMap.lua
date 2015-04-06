@@ -11,6 +11,7 @@ local LMP = LibStub("LibMapPins-1.0")
 
 -- Constants
 local PIN_TYPE_QUEST_GIVER = "QuestGiver"
+local PIN_TYPE_QUEST_GIVER_HIDDEN = "QuestGiver_hidden"
 local LMP_FORMAT_ZONE_TWO_STRINGS = 1
 local LMP_FORMAT_ZONE_SINGLE_STRING = 2
 
@@ -34,8 +35,9 @@ local function GetCompletedQuests()
 end
 
 -- Callback function which is called every time another map is viewed, creates quest pins
-local function MapCallback()
-	if not LMP:IsEnabled(PIN_TYPE_QUEST_GIVER) or (GetMapType() > MAPTYPE_ZONE) then return end
+local function MapCallbackQuestPins()
+	if not LMP:IsEnabled(PIN_TYPE_QUEST_GIVER) and not LMP:IsEnabled(PIN_TYPE_QUEST_GIVER_HIDDEN) then return end
+	if GetMapType() > MAPTYPE_ZONE then return end
 	
 	-- Get completed quests
 	local completed = GetCompletedQuests()
@@ -46,9 +48,22 @@ local function MapCallback()
 	-- For each uncompleted quest, create a map pin with the quest name
 	for _, quests in ipairs(questslist) do
 		if not completed[quests.id] then
+			-- Get quest name and only continue if string isn't empty
 			local name = QuestMap:GetQuestName(quests.id)
 			if name ~= "" then
-				LMP:CreatePin(PIN_TYPE_QUEST_GIVER, {name}, quests.x, quests.y)
+				-- Create table with name and id (only name will be visible in tooltip because key for id is "id" and not index
+				local pinInfo = {name}
+				pinInfo.id = quests.id
+				-- Create pins for both categorys, visible and hidden
+				if QuestMap.settings.hiddenQuests[quests.id] == nil then
+					if LMP:IsEnabled(PIN_TYPE_QUEST_GIVER) then
+						LMP:CreatePin(PIN_TYPE_QUEST_GIVER, pinInfo, quests.x, quests.y)
+					end
+				else
+					if LMP:IsEnabled(PIN_TYPE_QUEST_GIVER_HIDDEN) then
+						LMP:CreatePin(PIN_TYPE_QUEST_GIVER_HIDDEN, pinInfo, quests.x, quests.y)
+					end
+				end
 			end
 		end
 	end
@@ -67,6 +82,7 @@ local function OnPlayerActivated(event)
 	QuestMap.settings = ZO_SavedVars:New("QuestMapSettings", 1, nil, {})
 	if QuestMap.settings.pinSize == nil then QuestMap.settings.pinSize = 32 end
 	if QuestMap.settings.pinLevel == nil then QuestMap.settings.pinLevel = 40 end
+	if QuestMap.settings.hiddenQuests == nil then QuestMap.settings.hiddenQuests = {} end
 	
 	-- Get tootip of each individual pin
 	local pinTooltipCreator = {
@@ -80,10 +96,28 @@ local function OnPlayerActivated(event)
 	}
 	-- Pin display style
 	local pinLayout = {level = QuestMap.settings.pinLevel, texture = "QuestMap/icons/pin.dds", size = QuestMap.settings.pinSize}
-	-- Add a new pin type for quest givers with previously defined style
-	LMP:AddPinType(PIN_TYPE_QUEST_GIVER, MapCallback, nil, pinLayout, pinTooltipCreator)
-	-- Add checkbox to map filters
+	-- Add a new pin types for quest givers with previously defined style
+	LMP:AddPinType(PIN_TYPE_QUEST_GIVER, MapCallbackQuestPins, nil, pinLayout, pinTooltipCreator)
+	LMP:AddPinType(PIN_TYPE_QUEST_GIVER_HIDDEN, MapCallbackQuestPins, nil, pinLayout, pinTooltipCreator)
+	-- Add checkboxes to map filters
 	LMP:AddPinFilter(PIN_TYPE_QUEST_GIVER, "Quest givers")
+	LMP:AddPinFilter(PIN_TYPE_QUEST_GIVER_HIDDEN, "Quest givers (manually hidden)")
+	LMP:Disable(PIN_TYPE_QUEST_GIVER_HIDDEN)
+	-- Add click action for pins
+	LMP:SetClickHandlers(PIN_TYPE_QUEST_GIVER, {[1] = {callback = function(pin)
+			-- Add to table which holds all the hidden quests
+			QuestMap.settings.hiddenQuests[pin.m_PinTag.id] = QuestMap:GetQuestName(pin.m_PinTag.id)
+			d("Quest hidden ("..QuestMap:GetQuestName(pin.m_PinTag.id)..")")
+			LMP:RefreshPins(PIN_TYPE_QUEST_GIVER)
+			LMP:RefreshPins(PIN_TYPE_QUEST_GIVER_HIDDEN)
+		end}})
+	LMP:SetClickHandlers(PIN_TYPE_QUEST_GIVER_HIDDEN, {[1] = {callback = function(pin)
+			-- Remove from table which holds all the hidden quests
+			QuestMap.settings.hiddenQuests[pin.m_PinTag.id] = nil
+			d("Quest unhidden ("..QuestMap:GetQuestName(pin.m_PinTag.id)..")")
+			LMP:RefreshPins(PIN_TYPE_QUEST_GIVER)
+			LMP:RefreshPins(PIN_TYPE_QUEST_GIVER_HIDDEN)
+		end}})
 	
 	EVENT_MANAGER:UnregisterForEvent(QuestMap.name, EVENT_PLAYER_ACTIVATED)
 end
