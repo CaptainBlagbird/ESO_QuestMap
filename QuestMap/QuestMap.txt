@@ -1,0 +1,11 @@
+## Title: Quest Map
+## Author: |c70C0DECaptainBlagbird|r
+## APIVersion: 100011
+## OptionalDependsOn:  LibMapPins-1.0
+
+libs/LibStub/LibStub.lua
+libs/LibMapPins-1.0/LibMapPins-1.0.lua
+
+QuestMap.lua
+data/ZoneQuests.lua
+data/QuestNames.lua
