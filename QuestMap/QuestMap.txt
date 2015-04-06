@@ -2,7 +2,7 @@
 ## Version: 1.0
 ## Author: |c70C0DECaptainBlagbird|r
 ## APIVersion: 100011
-## Description: Displays quests givers on the world map
+## Description: Displays quest givers on the world map
 ## SavedVariables: QuestMapSettings
 ## OptionalDependsOn:  LibMapPins-1.0 LibAddonMenu-2.0
 
