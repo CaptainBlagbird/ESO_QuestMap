@@ -18,17 +18,41 @@ local LMP_FORMAT_ZONE_SINGLE_STRING = 2
 QuestMap = {}
 QuestMap.name = "Quest Map"
 
+local function GetCompletedQuests()
+	local completed = {}
+	
+	-- Get all completed quests
+	while true do
+		-- Get next completed quest. If it was the last, break loop
+		id = GetNextCompletedQuestId(id)
+		if id == nil then break end
+		
+		-- TODO: Handle doubles
+		
+		completed[id] = true
+	end
+	
+	return completed
+end
+
+-- Callback function which is called every time another map is viewed, creates quest pins
 local function MapCallback()
 	if not LMP:IsEnabled(PIN_TYPE_QUEST_GIVER) or (GetMapType() > MAPTYPE_ZONE) then return end
 	
+	-- Get completed quests
+	local completed = GetCompletedQuests()
 	-- Get currently displayed zone and subzone from texture
 	local zone = LMP:GetZoneAndSubzone(LMP_FORMAT_ZONE_SINGLE_STRING)
 	-- Get quest list for that zone from database
 	local questslist = QuestMap:GetQuestList(zone)
-	-- For each quest, create a map pin with the quest name
+	-- For each uncompleted quest, create a map pin with the quest name
 	for _, quests in ipairs(questslist) do
-		local name = {QuestMap:GetQuestName(quests.id)}
-		LMP:CreatePin(PIN_TYPE_QUEST_GIVER, name, quests.x, quests.y)
+		if not completed[quests.id] then
+			local name = QuestMap:GetQuestName(quests.id)
+			if name ~= "" then
+				LMP:CreatePin(PIN_TYPE_QUEST_GIVER, {name}, quests.x, quests.y)
+			end
+		end
 	end
 end
 
