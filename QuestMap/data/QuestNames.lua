@@ -1,3 +1,11 @@
+--[[
+
+Quest Map
+by CaptainBlagbird
+https://github.com/CaptainBlagbird
+
+--]]
+
 local quests = {
 	[19] = "A Sister's Plea",
 	[30] = "Theft from the Bog",

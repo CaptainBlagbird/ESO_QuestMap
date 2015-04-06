@@ -1,11 +1,37 @@
 ## Title: Quest Map
 ## Author: |c70C0DECaptainBlagbird|r
 ## APIVersion: 100011
-## OptionalDependsOn:  LibMapPins-1.0
+## Description: Displays quests givers on the world map
+## SavedVariables: QuestMapSettings
+## OptionalDependsOn:  LibMapPins-1.0 LibAddonMenu-2.0
 
 libs/LibStub/LibStub.lua
+libs/LibAddonMenu-2.0/LibAddonMenu-2.0.lua
+libs/LibAddonMenu-2.0/controls/panel.lua
+libs/LibAddonMenu-2.0/controls/submenu.lua
+libs/LibAddonMenu-2.0/controls/button.lua
+libs/LibAddonMenu-2.0/controls/checkbox.lua
+libs/LibAddonMenu-2.0/controls/colorpicker.lua
+libs/LibAddonMenu-2.0/controls/custom.lua
+libs/LibAddonMenu-2.0/controls/description.lua
+libs/LibAddonMenu-2.0/controls/dropdown.lua
+libs/LibAddonMenu-2.0/controls/editbox.lua
+libs/LibAddonMenu-2.0/controls/header.lua
+libs/LibAddonMenu-2.0/controls/slider.lua
+libs/LibAddonMenu-2.0/controls/texture.lua
 libs/LibMapPins-1.0/LibMapPins-1.0.lua
 
 QuestMap.lua
+Settings.lua
 data/ZoneQuests.lua
 data/QuestNames.lua
+
+
+
+; This Add-on is not created by, affiliated with or sponsored by ZeniMax
+; Media Inc. or its affiliates. The Elder Scrolls® and related logos are
+; registered trademarks or trademarks of ZeniMax Media Inc. in the United
+; States and/or other countries. All rights reserved.
+;
+; You can read the full terms at:
+; https://account.elderscrollsonline.com/add-on-terms

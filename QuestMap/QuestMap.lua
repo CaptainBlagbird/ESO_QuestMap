@@ -27,8 +27,6 @@ local function GetCompletedQuests()
 		id = GetNextCompletedQuestId(id)
 		if id == nil then break end
 		
-		-- TODO: Handle doubles
-		
 		completed[id] = true
 	end
 	
@@ -56,8 +54,20 @@ local function MapCallback()
 	end
 end
 
+-- Function to refresh pin appearance (e.g. from settings menu)
+function QuestMap:RefreshPinLayout()
+	LMP:SetLayoutKey(PIN_TYPE_QUEST_GIVER, "size", QuestMap.settings.pinSize)
+	LMP:SetLayoutKey(PIN_TYPE_QUEST_GIVER, "level", QuestMap.settings.pinLevel)
+	LMP:RefreshPins(PIN_TYPE_QUEST_GIVER)
+end
+
 -- Event handler function for EVENT_PLAYER_ACTIVATED
-local function OnPlayerActivated(event)	
+local function OnPlayerActivated(event)
+	-- Set up SavedVariables table
+	QuestMap.settings = ZO_SavedVars:New("QuestMapSettings", 1, nil, {})
+	if QuestMap.settings.pinSize == nil then QuestMap.settings.pinSize = 32 end
+	if QuestMap.settings.pinLevel == nil then QuestMap.settings.pinLevel = 40 end
+	
 	-- Get tootip of each individual pin
 	local pinTooltipCreator = {
 		creator = function(pin)
@@ -69,7 +79,7 @@ local function OnPlayerActivated(event)
 		tooltip = 1, -- Delete the line above and uncomment this line for Update 6
 	}
 	-- Pin display style
-	local pinLayout = { level = 40, texture = "QuestMap/icons/pin.dds", size = 38 }
+	local pinLayout = {level = QuestMap.settings.pinLevel, texture = "QuestMap/icons/pin.dds", size = QuestMap.settings.pinSize}
 	-- Add a new pin type for quest givers with previously defined style
 	LMP:AddPinType(PIN_TYPE_QUEST_GIVER, MapCallback, nil, pinLayout, pinTooltipCreator)
 	-- Add checkbox to map filters

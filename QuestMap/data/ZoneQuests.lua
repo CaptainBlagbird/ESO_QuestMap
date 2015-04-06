@@ -1,3 +1,11 @@
+--[[
+
+Quest Map
+by CaptainBlagbird
+https://github.com/CaptainBlagbird
+
+--]]
+
 local zones = {
 	["stormhaven/alcairecastle_base"] = {
 		[1] = {
