@@ -54,6 +54,33 @@ local optionsTable = {
 		width = "full",
 		default = 40,
 	},
+	[3] = {
+		type = "header",
+		name = "",
+		width = "full",
+	},
+	[4] = {
+		type = "description",
+		title = "Note: 'Reset to Defaults' does NOT reset manually hidden quest pins.",
+		text = "",
+		width = "full",
+	},
+	[5] = {
+		type = "description",
+		title = "If you want to clear ALL manually hidden quest pins at once, you can use this button:",
+		text = "",
+		width = "half",
+	},
+	[6] = {
+		type = "button",
+		name = "Reset hidden pins",
+		tooltip = "Reset manually hidden pins",
+		func = function()
+				QuestMap.settings.hiddenQuests = {}
+				end,
+		width = "half",
+		warning = "Cannot be undone!",
+	},
 }
 
 
