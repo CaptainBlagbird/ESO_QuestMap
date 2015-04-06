@@ -74,13 +74,16 @@ function QuestMap:RefreshPinLayout()
 	LMP:SetLayoutKey(PIN_TYPE_QUEST_GIVER, "size", QuestMap.settings.pinSize)
 	LMP:SetLayoutKey(PIN_TYPE_QUEST_GIVER, "level", QuestMap.settings.pinLevel)
 	LMP:RefreshPins(PIN_TYPE_QUEST_GIVER)
+	LMP:SetLayoutKey(PIN_TYPE_QUEST_GIVER_HIDDEN, "size", QuestMap.settings.pinSize)
+	LMP:SetLayoutKey(PIN_TYPE_QUEST_GIVER_HIDDEN, "level", QuestMap.settings.pinLevel)
+	LMP:RefreshPins(PIN_TYPE_QUEST_GIVER_HIDDEN)
 end
 
 -- Event handler function for EVENT_PLAYER_ACTIVATED
 local function OnPlayerActivated(event)
 	-- Set up SavedVariables table
 	QuestMap.settings = ZO_SavedVars:New("QuestMapSettings", 1, nil, {})
-	if QuestMap.settings.pinSize == nil then QuestMap.settings.pinSize = 32 end
+	if QuestMap.settings.pinSize == nil then QuestMap.settings.pinSize = 25 end
 	if QuestMap.settings.pinLevel == nil then QuestMap.settings.pinLevel = 40 end
 	if QuestMap.settings.hiddenQuests == nil then QuestMap.settings.hiddenQuests = {} end
 	
@@ -94,10 +97,10 @@ local function OnPlayerActivated(event)
 		end,
 		tooltip = 1, -- Delete the line above and uncomment this line for Update 6
 	}
-	-- Pin display style
-	local pinLayout = {level = QuestMap.settings.pinLevel, texture = "QuestMap/icons/pin.dds", size = QuestMap.settings.pinSize}
-	-- Add a new pin types for quest givers with previously defined style
+	-- Add a new pin types for quest givers
+	local pinLayout = {level = QuestMap.settings.pinLevel, texture = "QuestMap/icons/pinQuestUncompleted.dds", size = QuestMap.settings.pinSize}
 	LMP:AddPinType(PIN_TYPE_QUEST_GIVER, MapCallbackQuestPins, nil, pinLayout, pinTooltipCreator)
+	pinLayout = {level = QuestMap.settings.pinLevel, texture = "QuestMap/icons/pinQuestCompleted.dds", size = QuestMap.settings.pinSize}
 	LMP:AddPinType(PIN_TYPE_QUEST_GIVER_HIDDEN, MapCallbackQuestPins, nil, pinLayout, pinTooltipCreator)
 	-- Add checkboxes to map filters
 	LMP:AddPinFilter(PIN_TYPE_QUEST_GIVER, "Quest givers")

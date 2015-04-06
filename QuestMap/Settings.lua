@@ -27,8 +27,8 @@ local optionsTable = {
 	[1] = {
 		type = "slider",
 		name = "Map pin size",
-		tooltip = "Sets the display size of the map pins (default: 32)",
-		min = 20,
+		tooltip = "Sets the display size of the map pins (default: 25)",
+		min = 5,
 		max = 70,
 		step = 1,
 		getFunc = function() return QuestMap.settings.pinSize end,
@@ -37,7 +37,7 @@ local optionsTable = {
 						QuestMap:RefreshPinLayout()
 					end,
 		width = "full",
-		default = 32,
+		default = 25,
 	},
 	[2] = {
 		type = "slider",
