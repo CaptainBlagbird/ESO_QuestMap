@@ -105,9 +105,9 @@ local function OnPlayerActivated(event)
 	LMP:AddPinType(PIN_TYPE_QUEST_GIVER_HIDDEN, MapCallbackQuestPins, nil, pinLayout, pinTooltipCreator)
 	-- Add checkboxes to map filters
 	LMP:AddPinFilter(PIN_TYPE_QUEST_GIVER, "Quest givers", false, QuestMap.settings.pinFilters)
-	if not QuestMap.settings.pinFilters[PIN_TYPE_QUEST_GIVER] then	LMP:Disable(PIN_TYPE_QUEST_GIVER) end
+	if not QuestMap.settings.pinFilters[PIN_TYPE_QUEST_GIVER] then LMP:Disable(PIN_TYPE_QUEST_GIVER) end
 	LMP:AddPinFilter(PIN_TYPE_QUEST_GIVER_HIDDEN, "Quest givers (manually hidden)", false, QuestMap.settings.pinFilters)
-	if not QuestMap.settings.pinFilters[PIN_TYPE_QUEST_GIVER_HIDDEN] then	LMP:Disable(PIN_TYPE_QUEST_GIVER_HIDDEN) end
+	if not QuestMap.settings.pinFilters[PIN_TYPE_QUEST_GIVER_HIDDEN] then LMP:Disable(PIN_TYPE_QUEST_GIVER_HIDDEN) end
 	-- Add click action for pins
 	LMP:SetClickHandlers(PIN_TYPE_QUEST_GIVER, {[1] = {callback = function(pin)
 			-- Add to table which holds all the hidden quests
@@ -127,6 +127,15 @@ local function OnPlayerActivated(event)
 	EVENT_MANAGER:UnregisterForEvent(QuestMap.name, EVENT_PLAYER_ACTIVATED)
 end
 
+-- Event handler function for EVENT_QUEST_COMPLETE
+local function OnQuestComplete(event, name, lvl, pXP, cXP, rnk, pPoints, cPoints)
+	-- Refresh map pins
+	MapCallbackQuestPins()
+	LMP:RefreshPins(PIN_TYPE_QUEST_GIVER)
+	LMP:RefreshPins(PIN_TYPE_QUEST_GIVER_HIDDEN)
+end
+
 
 -- Registering the event handler functions for the events
 EVENT_MANAGER:RegisterForEvent(QuestMap.name, EVENT_PLAYER_ACTIVATED, OnPlayerActivated)
+EVENT_MANAGER:RegisterForEvent(QuestMap.name, EVENT_QUEST_COMPLETE,   OnQuestComplete)
