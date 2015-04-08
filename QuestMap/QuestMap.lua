@@ -109,14 +109,20 @@ local function OnPlayerActivated(event)
 	LMP:AddPinFilter(PIN_TYPE_QUEST_GIVER_HIDDEN, "Quest givers (manually hidden)", false, QuestMap.settings.pinFilters)
 	if not QuestMap.settings.pinFilters[PIN_TYPE_QUEST_GIVER_HIDDEN] then LMP:Disable(PIN_TYPE_QUEST_GIVER_HIDDEN) end
 	-- Add click action for pins
-	LMP:SetClickHandlers(PIN_TYPE_QUEST_GIVER, {[1] = {callback = function(pin)
+	LMP:SetClickHandlers(PIN_TYPE_QUEST_GIVER, {[1] = {name = function(pin) return zo_strformat("Hide quest |cFFFFFF<<1>>|r", QuestMap:GetQuestName(pin.m_PinTag.id)) end,
+		show = function(pin) return true end,
+		duplicates = function(pin1, pin2) return pin1.m_PinTag.id == pin2.m_PinTag.id end,
+		callback = function(pin)
 			-- Add to table which holds all the hidden quests
 			QuestMap.settings.hiddenQuests[pin.m_PinTag.id] = QuestMap:GetQuestName(pin.m_PinTag.id)
 			d("Quest hidden ("..QuestMap:GetQuestName(pin.m_PinTag.id)..")")
 			LMP:RefreshPins(PIN_TYPE_QUEST_GIVER)
 			LMP:RefreshPins(PIN_TYPE_QUEST_GIVER_HIDDEN)
 		end}})
-	LMP:SetClickHandlers(PIN_TYPE_QUEST_GIVER_HIDDEN, {[1] = {callback = function(pin)
+	LMP:SetClickHandlers(PIN_TYPE_QUEST_GIVER_HIDDEN, {[1] = {name = function(pin) return zo_strformat("Unhide quest |cFFFFFF<<1>>|r", QuestMap:GetQuestName(pin.m_PinTag.id)) end,
+		show = function(pin) return true end,
+		duplicates = function(pin1, pin2) return pin1.m_PinTag.id == pin2.m_PinTag.id end,
+		callback = function(pin)
 			-- Remove from table which holds all the hidden quests
 			QuestMap.settings.hiddenQuests[pin.m_PinTag.id] = nil
 			d("Quest unhidden ("..QuestMap:GetQuestName(pin.m_PinTag.id)..")")
