@@ -35,7 +35,7 @@ local function GetCompletedQuests()
 end
 
 -- Callback function which is called every time another map is viewed, creates quest pins
-local function MapCallbackQuestPins()
+local function MapCallbackQuestPins(pinType)
 	if not LMP:IsEnabled(PIN_TYPE_QUEST_GIVER) and not LMP:IsEnabled(PIN_TYPE_QUEST_GIVER_HIDDEN) then return end
 	if GetMapType() > MAPTYPE_ZONE then return end
 	
@@ -56,11 +56,11 @@ local function MapCallbackQuestPins()
 				pinInfo.id = quests.id
 				-- Create pins for both categorys, visible and hidden
 				if QuestMap.settings.hiddenQuests[quests.id] == nil then
-					if LMP:IsEnabled(PIN_TYPE_QUEST_GIVER) then
+					if pinType == PIN_TYPE_QUEST_GIVER then
 						LMP:CreatePin(PIN_TYPE_QUEST_GIVER, pinInfo, quests.x, quests.y)
 					end
 				else
-					if LMP:IsEnabled(PIN_TYPE_QUEST_GIVER_HIDDEN) then
+					if pinType == PIN_TYPE_QUEST_GIVER_HIDDEN then
 						LMP:CreatePin(PIN_TYPE_QUEST_GIVER_HIDDEN, pinInfo, quests.x, quests.y)
 					end
 				end
@@ -100,9 +100,9 @@ local function OnPlayerActivated(event)
 	}
 	-- Add a new pin types for quest givers
 	local pinLayout = {level = QuestMap.settings.pinLevel, texture = "QuestMap/icons/pinQuestUncompleted.dds", size = QuestMap.settings.pinSize}
-	LMP:AddPinType(PIN_TYPE_QUEST_GIVER, MapCallbackQuestPins, nil, pinLayout, pinTooltipCreator)
+	LMP:AddPinType(PIN_TYPE_QUEST_GIVER, function() MapCallbackQuestPins(PIN_TYPE_QUEST_GIVER) end, nil, pinLayout, pinTooltipCreator)
 	pinLayout = {level = QuestMap.settings.pinLevel, texture = "QuestMap/icons/pinQuestCompleted.dds", size = QuestMap.settings.pinSize}
-	LMP:AddPinType(PIN_TYPE_QUEST_GIVER_HIDDEN, MapCallbackQuestPins, nil, pinLayout, pinTooltipCreator)
+	LMP:AddPinType(PIN_TYPE_QUEST_GIVER_HIDDEN, function() MapCallbackQuestPins(PIN_TYPE_QUEST_GIVER_HIDDEN) end, nil, pinLayout, pinTooltipCreator)
 	-- Add checkboxes to map filters
 	LMP:AddPinFilter(PIN_TYPE_QUEST_GIVER, "Quest givers", false, QuestMap.settings.pinFilters)
 	if not QuestMap.settings.pinFilters[PIN_TYPE_QUEST_GIVER] then LMP:Disable(PIN_TYPE_QUEST_GIVER) end
