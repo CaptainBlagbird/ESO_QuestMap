@@ -12,8 +12,8 @@ local LMP = LibStub("LibMapPins-1.0")
 -- Constants
 local PIN_TYPE_QUEST_GIVER = "QuestGiver"
 local PIN_TYPE_QUEST_GIVER_HIDDEN = "QuestGiver_hidden"
-local LMP_FORMAT_ZONE_TWO_STRINGS = 1
-local LMP_FORMAT_ZONE_SINGLE_STRING = 2
+local LMP_FORMAT_ZONE_TWO_STRINGS = false
+local LMP_FORMAT_ZONE_SINGLE_STRING = true
 
 -- Addon info
 QuestMap = {}
@@ -114,9 +114,9 @@ local function OnPlayerActivated(event)
 	pinLayout = {level = QuestMap.settings.pinLevel, texture = "QuestMap/icons/pinQuestCompleted.dds", size = QuestMap.settings.pinSize}
 	LMP:AddPinType(PIN_TYPE_QUEST_GIVER_HIDDEN, function() MapCallbackQuestPins(PIN_TYPE_QUEST_GIVER_HIDDEN) end, nil, pinLayout, pinTooltipCreator)
 	-- Add checkboxes to map filters
-	LMP:AddPinFilter(PIN_TYPE_QUEST_GIVER, "Quest givers", false, QuestMap.settings.pinFilters)
+	LMP:AddPinFilter(PIN_TYPE_QUEST_GIVER, "Quest givers", true, QuestMap.settings.pinFilters)
 	if not QuestMap.settings.pinFilters[PIN_TYPE_QUEST_GIVER] then LMP:Disable(PIN_TYPE_QUEST_GIVER) end
-	LMP:AddPinFilter(PIN_TYPE_QUEST_GIVER_HIDDEN, "Quest givers (manually hidden)", false, QuestMap.settings.pinFilters)
+	LMP:AddPinFilter(PIN_TYPE_QUEST_GIVER_HIDDEN, "Quest givers (manually hidden)", true, QuestMap.settings.pinFilters)
 	if not QuestMap.settings.pinFilters[PIN_TYPE_QUEST_GIVER_HIDDEN] then LMP:Disable(PIN_TYPE_QUEST_GIVER_HIDDEN) end
 	-- Add click action for pins
 	LMP:SetClickHandlers(PIN_TYPE_QUEST_GIVER, {[1] = {name = function(pin) return zo_strformat("Hide quest |cFFFFFF<<1>>|r", QuestMap:GetQuestName(pin.m_PinTag.id)) end,
