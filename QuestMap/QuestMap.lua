@@ -19,18 +19,27 @@ local LMP_FORMAT_ZONE_SINGLE_STRING = 2
 QuestMap = {}
 QuestMap.name = "Quest Map"
 
+
+-- Function to print text to the chat window including the addon name
+local function p(s)
+	-- Add addon name to message
+	s = "|c70C0DE["..QuestMap.name.."]|r "..s
+	-- Replace regular color (yellow) with ESO golden in this string
+	s = s:gsub("|r", "|cC5C29E")
+	-- Display message
+	d(s)
+end
+
+-- Function to get a id list of all the completed quests
 local function GetCompletedQuests()
 	local completed = {}
-	
 	-- Get all completed quests
 	while true do
 		-- Get next completed quest. If it was the last, break loop
 		id = GetNextCompletedQuestId(id)
 		if id == nil then break end
-		
 		completed[id] = true
 	end
-	
 	return completed
 end
 
@@ -116,7 +125,7 @@ local function OnPlayerActivated(event)
 		callback = function(pin)
 			-- Add to table which holds all the hidden quests
 			QuestMap.settings.hiddenQuests[pin.m_PinTag.id] = QuestMap:GetQuestName(pin.m_PinTag.id)
-			if QuestMap.settings.displayClickMsg then d("Quest hidden ("..QuestMap:GetQuestName(pin.m_PinTag.id)..")") end
+			if QuestMap.settings.displayClickMsg then p("Quest hidden: |cFFFFFF"..QuestMap:GetQuestName(pin.m_PinTag.id)) end
 			LMP:RefreshPins(PIN_TYPE_QUEST_GIVER)
 			LMP:RefreshPins(PIN_TYPE_QUEST_GIVER_HIDDEN)
 		end}})
@@ -126,7 +135,7 @@ local function OnPlayerActivated(event)
 		callback = function(pin)
 			-- Remove from table which holds all the hidden quests
 			QuestMap.settings.hiddenQuests[pin.m_PinTag.id] = nil
-			if QuestMap.settings.displayClickMsg then d("Quest unhidden ("..QuestMap:GetQuestName(pin.m_PinTag.id)..")") end
+			if QuestMap.settings.displayClickMsg then p("Quest unhidden: |cFFFFFF"..QuestMap:GetQuestName(pin.m_PinTag.id)) end
 			LMP:RefreshPins(PIN_TYPE_QUEST_GIVER)
 			LMP:RefreshPins(PIN_TYPE_QUEST_GIVER_HIDDEN)
 		end}})
