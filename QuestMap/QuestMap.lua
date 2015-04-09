@@ -87,6 +87,7 @@ local function OnPlayerActivated(event)
 	if QuestMap.settings.pinLevel == nil then QuestMap.settings.pinLevel = 40 end
 	if QuestMap.settings.hiddenQuests == nil then QuestMap.settings.hiddenQuests = {} end
 	if QuestMap.settings.pinFilters == nil then QuestMap.settings.pinFilters = {[PIN_TYPE_QUEST_GIVER] = true, [PIN_TYPE_QUEST_GIVER_HIDDEN] = false} end
+	if QuestMap.settings.displayClickMsg == nil then QuestMap.settings.displayClickMsg = true end
 	
 	-- Get tootip of each individual pin
 	local pinTooltipCreator = {
@@ -115,7 +116,7 @@ local function OnPlayerActivated(event)
 		callback = function(pin)
 			-- Add to table which holds all the hidden quests
 			QuestMap.settings.hiddenQuests[pin.m_PinTag.id] = QuestMap:GetQuestName(pin.m_PinTag.id)
-			d("Quest hidden ("..QuestMap:GetQuestName(pin.m_PinTag.id)..")")
+			if QuestMap.settings.displayClickMsg then d("Quest hidden ("..QuestMap:GetQuestName(pin.m_PinTag.id)..")") end
 			LMP:RefreshPins(PIN_TYPE_QUEST_GIVER)
 			LMP:RefreshPins(PIN_TYPE_QUEST_GIVER_HIDDEN)
 		end}})
@@ -125,7 +126,7 @@ local function OnPlayerActivated(event)
 		callback = function(pin)
 			-- Remove from table which holds all the hidden quests
 			QuestMap.settings.hiddenQuests[pin.m_PinTag.id] = nil
-			d("Quest unhidden ("..QuestMap:GetQuestName(pin.m_PinTag.id)..")")
+			if QuestMap.settings.displayClickMsg then d("Quest unhidden ("..QuestMap:GetQuestName(pin.m_PinTag.id)..")") end
 			LMP:RefreshPins(PIN_TYPE_QUEST_GIVER)
 			LMP:RefreshPins(PIN_TYPE_QUEST_GIVER_HIDDEN)
 		end}})
