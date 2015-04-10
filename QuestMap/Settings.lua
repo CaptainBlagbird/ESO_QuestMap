@@ -15,7 +15,7 @@ local panelData = {
 	slashCommand = "/questmap",	--(optional) will register a keybind to open to this panel
 	registerForRefresh = true,	--boolean (optional) (will refresh all options controls when a setting is changed and when the panel is shown)
 	registerForDefaults = true,	--boolean (optional) (will set all options controls back to default values)
-	-- resetFunc = function() --[[ reset to defaults function --]] end,
+	resetFunc = function() QuestMap:ResetPinFilters() end,	--function (optional) if registerForDefaults is true, this custom function will run after settings are reset to defaults
 }
 
 local function ChangePinSize(value)

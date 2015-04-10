@@ -88,6 +88,15 @@ function QuestMap:RefreshPinLayout()
 	LMP:RefreshPins(PIN_TYPE_QUEST_GIVER_HIDDEN)
 end
 
+-- Function to reset pin filters to default
+function QuestMap:ResetPinFilters()
+	QuestMap.settings.pinFilters = {}
+	QuestMap.settings.pinFilters[PIN_TYPE_QUEST_GIVER] = true
+	QuestMap.settings.pinFilters[PIN_TYPE_QUEST_GIVER_HIDDEN] = false
+	QuestMap.settings.pinFilters[PIN_TYPE_QUEST_GIVER.."_pvp"] = false
+	QuestMap.settings.pinFilters[PIN_TYPE_QUEST_GIVER_HIDDEN.."_pvp"] = false
+end
+
 -- Event handler function for EVENT_PLAYER_ACTIVATED
 local function OnPlayerActivated(event)
 	-- Set up SavedVariables table
@@ -95,7 +104,13 @@ local function OnPlayerActivated(event)
 	if QuestMap.settings.pinSize == nil then QuestMap.settings.pinSize = 25 end
 	if QuestMap.settings.pinLevel == nil then QuestMap.settings.pinLevel = 40 end
 	if QuestMap.settings.hiddenQuests == nil then QuestMap.settings.hiddenQuests = {} end
-	if QuestMap.settings.pinFilters == nil then QuestMap.settings.pinFilters = {[PIN_TYPE_QUEST_GIVER] = true, [PIN_TYPE_QUEST_GIVER_HIDDEN] = false} end
+	if QuestMap.settings.pinFilters == nil
+		or QuestMap.settings.pinFilters[PIN_TYPE_QUEST_GIVER] == nil
+		or QuestMap.settings.pinFilters[PIN_TYPE_QUEST_GIVER_HIDDEN] == nil
+		or QuestMap.settings.pinFilters[PIN_TYPE_QUEST_GIVER.."_pvp"] == nil
+		or QuestMap.settings.pinFilters[PIN_TYPE_QUEST_GIVER_HIDDEN.."_pvp"] == nil then
+		QuestMap:ResetPinFilters()
+	end
 	if QuestMap.settings.displayClickMsg == nil then QuestMap.settings.displayClickMsg = true end
 	
 	-- Get tootip of each individual pin
