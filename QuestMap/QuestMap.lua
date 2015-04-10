@@ -30,15 +30,30 @@ local function p(s)
 	d(s)
 end
 
--- Function to get a id list of all the completed quests
+-- Function to get an id list of all the completed quests
 local function GetCompletedQuests()
 	local completed = {}
+	local id
 	-- Get all completed quests
 	while true do
 		-- Get next completed quest. If it was the last, break loop
 		id = GetNextCompletedQuestId(id)
 		if id == nil then break end
 		completed[id] = true
+	end
+	return completed
+end
+
+-- Function to remove completed quests from list of manually hidden quests
+local function RemoveQuestsCompletedFromHidden()
+	local id
+	-- Get all completed quests
+	while true do
+		-- Get next completed quest. If it was the last, break loop
+		id = GetNextCompletedQuestId(id)
+		if id == nil then break end
+		-- If current quest was in the list of manually hidden quests, remove it from there
+		if QuestMap.settings.hiddenQuests[id] ~= nil then QuestMap.settings.hiddenQuests[id] = nil end
 	end
 	return completed
 end
@@ -164,6 +179,8 @@ local function OnQuestComplete(event, name, lvl, pXP, cXP, rnk, pPoints, cPoints
 	MapCallbackQuestPins()
 	LMP:RefreshPins(PIN_TYPE_QUEST_GIVER)
 	LMP:RefreshPins(PIN_TYPE_QUEST_GIVER_HIDDEN)
+	-- Clean up list with hidden quests
+	RemoveQuestsCompletedFromHidden()
 end
 
 
