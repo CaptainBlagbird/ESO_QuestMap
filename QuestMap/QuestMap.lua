@@ -81,20 +81,23 @@ local function MapCallbackQuestPins(pinType)
 		local name = QuestMap:GetQuestName(quests.id)
 		if name ~= "" then
 			-- Create table with name and id (only name will be visible in tooltip because key for id is "id" and not index
-			local pinInfo = {name}
+			local pinInfo = {"|cFFFFFF"..name}			
 			pinInfo.id = quests.id
 			-- Create pins for corresponding category
 			if completed[quests.id] then
 				if pinType == PIN_TYPE_QUEST_COMPLETED or pinType == nil then
+					pinInfo[2] = "[Completed]"
 					LMP:CreatePin(PIN_TYPE_QUEST_COMPLETED, pinInfo, quests.x, quests.y)
 				end
 			else
 				if QuestMap.settings.hiddenQuests[quests.id] == nil then
 					if pinType == PIN_TYPE_QUEST_UNCOMPLETED or pinType == nil then
+						pinInfo[2] = "[Uncompleted]"
 						LMP:CreatePin(PIN_TYPE_QUEST_UNCOMPLETED, pinInfo, quests.x, quests.y)
 					end
 				else
 					if pinType == PIN_TYPE_QUEST_HIDDEN or pinType == nil then
+						pinInfo[2] = "[Manually hidden]"
 						LMP:CreatePin(PIN_TYPE_QUEST_HIDDEN, pinInfo, quests.x, quests.y)
 					end
 				end
