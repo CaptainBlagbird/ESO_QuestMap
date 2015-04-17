@@ -16,10 +16,6 @@ local PIN_TYPE_QUEST_HIDDEN = "Quest_hidden"
 local LMP_FORMAT_ZONE_TWO_STRINGS = false
 local LMP_FORMAT_ZONE_SINGLE_STRING = true
 
--- Addon info
-QuestMap = {}
-QuestMap.name = "Quest Map"
-
 
 -- Function to print text to the chat window including the addon name
 local function p(s)
@@ -86,18 +82,18 @@ local function MapCallbackQuestPins(pinType)
 			-- Create pins for corresponding category
 			if completed[quests.id] then
 				if pinType == PIN_TYPE_QUEST_COMPLETED or pinType == nil then
-					pinInfo[2] = "[Completed]"
+					pinInfo[2] = "["..GetString(QUESTMAP_COMPLETED).."]"
 					LMP:CreatePin(PIN_TYPE_QUEST_COMPLETED, pinInfo, quests.x, quests.y)
 				end
 			else
 				if QuestMap.settings.hiddenQuests[quests.id] == nil then
 					if pinType == PIN_TYPE_QUEST_UNCOMPLETED or pinType == nil then
-						pinInfo[2] = "[Uncompleted]"
+						pinInfo[2] = "["..GetString(QUESTMAP_UNCOMPLETED).."]"
 						LMP:CreatePin(PIN_TYPE_QUEST_UNCOMPLETED, pinInfo, quests.x, quests.y)
 					end
 				else
 					if pinType == PIN_TYPE_QUEST_HIDDEN or pinType == nil then
-						pinInfo[2] = "[Manually hidden]"
+						pinInfo[2] = "["..GetString(QUESTMAP_HIDDEN).."]"
 						LMP:CreatePin(PIN_TYPE_QUEST_HIDDEN, pinInfo, quests.x, quests.y)
 					end
 				end
@@ -165,20 +161,20 @@ local function OnPlayerActivated(event)
 	LMP:AddPinType(PIN_TYPE_QUEST_COMPLETED, function() MapCallbackQuestPins(PIN_TYPE_QUEST_COMPLETED) end, nil, pinLayout, pinTooltipCreator)
 	LMP:AddPinType(PIN_TYPE_QUEST_HIDDEN, function() MapCallbackQuestPins(PIN_TYPE_QUEST_HIDDEN) end, nil, pinLayout, pinTooltipCreator)
 	-- Add map filters
-	LMP:AddPinFilter(PIN_TYPE_QUEST_UNCOMPLETED, "Quests (uncompleted)", true, QuestMap.settings.pinFilters)
+	LMP:AddPinFilter(PIN_TYPE_QUEST_UNCOMPLETED, "Quests ("..GetString(QUESTMAP_UNCOMPLETED)..")", true, QuestMap.settings.pinFilters)
 	if not QuestMap.settings.pinFilters[PIN_TYPE_QUEST_UNCOMPLETED] then LMP:Disable(PIN_TYPE_QUEST_UNCOMPLETED) end
-	LMP:AddPinFilter(PIN_TYPE_QUEST_COMPLETED, "Quests (completed)", true, QuestMap.settings.pinFilters)
+	LMP:AddPinFilter(PIN_TYPE_QUEST_COMPLETED, "Quests ("..GetString(QUESTMAP_COMPLETED)..")", true, QuestMap.settings.pinFilters)
 	if not QuestMap.settings.pinFilters[PIN_TYPE_QUEST_COMPLETED] then LMP:Disable(PIN_TYPE_QUEST_COMPLETED) end
-	LMP:AddPinFilter(PIN_TYPE_QUEST_HIDDEN, "Quests (manually hidden)", true, QuestMap.settings.pinFilters)
+	LMP:AddPinFilter(PIN_TYPE_QUEST_HIDDEN, "Quests ("..GetString(QUESTMAP_HIDDEN)..")", true, QuestMap.settings.pinFilters)
 	if not QuestMap.settings.pinFilters[PIN_TYPE_QUEST_HIDDEN] then LMP:Disable(PIN_TYPE_QUEST_HIDDEN) end
 	-- Add click action for pins
-	LMP:SetClickHandlers(PIN_TYPE_QUEST_UNCOMPLETED, {[1] = {name = function(pin) return zo_strformat("Hide quest |cFFFFFF<<1>>|r", QuestMap:GetQuestName(pin.m_PinTag.id)) end,
+	LMP:SetClickHandlers(PIN_TYPE_QUEST_UNCOMPLETED, {[1] = {name = function(pin) return zo_strformat(GetString(QUESTMAP_HIDE).." |cFFFFFF<<1>>|r", QuestMap:GetQuestName(pin.m_PinTag.id)) end,
 		show = function(pin) return true end,
 		duplicates = function(pin1, pin2) return pin1.m_PinTag.id == pin2.m_PinTag.id end,
 		callback = function(pin)
 			-- Add to table which holds all the hidden quests
 			QuestMap.settings.hiddenQuests[pin.m_PinTag.id] = QuestMap:GetQuestName(pin.m_PinTag.id)
-			if QuestMap.settings.displayClickMsg then p("Quest hidden: |cFFFFFF"..QuestMap:GetQuestName(pin.m_PinTag.id)) end
+			if QuestMap.settings.displayClickMsg then p(GetString(QUESTMAP_MSG_HIDDEN)..": |cFFFFFF"..QuestMap:GetQuestName(pin.m_PinTag.id)) end
 			LMP:RefreshPins(PIN_TYPE_QUEST_UNCOMPLETED)
 			LMP:RefreshPins(PIN_TYPE_QUEST_HIDDEN)
 		end}})
@@ -188,13 +184,13 @@ local function OnPlayerActivated(event)
 		callback = function(pin)
 			-- Do nothing
 		end}})
-	LMP:SetClickHandlers(PIN_TYPE_QUEST_HIDDEN, {[1] = {name = function(pin) return zo_strformat("Unhide quest |cFFFFFF<<1>>|r", QuestMap:GetQuestName(pin.m_PinTag.id)) end,
+	LMP:SetClickHandlers(PIN_TYPE_QUEST_HIDDEN, {[1] = {name = function(pin) return zo_strformat(GetString(QUESTMAP_UNHIDE).." |cFFFFFF<<1>>|r", QuestMap:GetQuestName(pin.m_PinTag.id)) end,
 		show = function(pin) return true end,
 		duplicates = function(pin1, pin2) return pin1.m_PinTag.id == pin2.m_PinTag.id end,
 		callback = function(pin)
 			-- Remove from table which holds all the hidden quests
 			QuestMap.settings.hiddenQuests[pin.m_PinTag.id] = nil
-			if QuestMap.settings.displayClickMsg then p("Quest unhidden: |cFFFFFF"..QuestMap:GetQuestName(pin.m_PinTag.id)) end
+			if QuestMap.settings.displayClickMsg then p(GetString(QUESTMAP_MSG_UNHIDDEN)..": |cFFFFFF"..QuestMap:GetQuestName(pin.m_PinTag.id)) end
 			LMP:RefreshPins(PIN_TYPE_QUEST_UNCOMPLETED)
 			LMP:RefreshPins(PIN_TYPE_QUEST_HIDDEN)
 		end}})

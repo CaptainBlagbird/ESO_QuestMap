@@ -26,8 +26,8 @@ end
 local optionsTable = {
 	[1] = {
 		type = "slider",
-		name = "Map pin size",
-		tooltip = "Sets the display size of the map pins (default: 25)",
+		name = GetString(QUESTMAP_MENU_PIN_SIZE),
+		tooltip = GetString(QUESTMAP_MENU_PIN_SIZE_TT),
 		min = 5,
 		max = 70,
 		step = 1,
@@ -41,8 +41,8 @@ local optionsTable = {
 	},
 	[2] = {
 		type = "slider",
-		name = "Map pin level",
-		tooltip = "Sets on which level the map pins are drawn (default: 40)",
+		name = GetString(QUESTMAP_MENU_PIN_LVL),
+		tooltip = GetString(QUESTMAP_MENU_PIN_LVL_TT),
 		min = 10,
 		max = 200,
 		step = 1,
@@ -56,8 +56,8 @@ local optionsTable = {
 	},
 	[3] = {
 		type = "checkbox",
-		name = "Display quest (un)hidden message",
-		tooltip = "Enable/disable message that is displayed when (un)hiding markers",
+		name = GetString(QUESTMAP_MENU_DISP_MSG),
+		tooltip = GetString(QUESTMAP_MENU_DISP_MSG_TT),
 		getFunc = function() return QuestMap.settings.displayClickMsg end,
 		setFunc = function(value) QuestMap.settings.displayClickMsg = value end,
 		default = true,
@@ -70,25 +70,25 @@ local optionsTable = {
 	},
 	[5] = {
 		type = "description",
-		title = "Note: 'Reset to Defaults' does NOT reset manually hidden quest pins.",
+		title = GetString(QUESTMAP_MENU_NOTE_1),
 		text = "",
 		width = "full",
 	},
 	[6] = {
 		type = "description",
-		title = "If you want to clear ALL manually hidden quest pins at once, you can use this button:",
+		title = GetString(QUESTMAP_MENU_NOTE_2),
 		text = "",
 		width = "half",
 	},
 	[7] = {
 		type = "button",
-		name = "Reset hidden pins",
-		tooltip = "Reset manually hidden pins",
+		name = GetString(QUESTMAP_MENU_RESET_HIDDEN),
+		tooltip = GetString(QUESTMAP_MENU_RESET_HIDDEN_TT),
 		func = function()
 				QuestMap.settings.hiddenQuests = {}
 				end,
 		width = "half",
-		warning = "Cannot be undone!",
+		warning = GetString(QUESTMAP_MENU_RESET_HIDDEN_W),
 	},
 }
 

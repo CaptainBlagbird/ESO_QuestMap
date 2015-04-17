@@ -22,10 +22,19 @@ libs/LibAddonMenu-2.0/controls/slider.lua
 libs/LibAddonMenu-2.0/controls/texture.lua
 libs/LibMapPins-1.0/LibMapPins-1.0.lua
 
-QuestMap.lua
-Settings.lua
+; Resources
+Init.lua
 data/ZoneQuests.lua
 data/QuestNames.lua
+lang/Strings.lua
+
+; Language overwrite
+lang/Strings-$(language).lua
+lang/QuestNames-$(language).lua
+
+; Main files
+Settings.lua
+Main.lua
 
 
 
