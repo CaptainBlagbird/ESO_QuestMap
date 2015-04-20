@@ -10,11 +10,12 @@ https://github.com/CaptainBlagbird
 local LMP = LibStub("LibMapPins-1.0")
 
 -- Constants
-local PIN_TYPE_QUEST_UNCOMPLETED = "Quest_uncompleted"
-local PIN_TYPE_QUEST_COMPLETED = "Quest_completed"
-local PIN_TYPE_QUEST_HIDDEN = "Quest_hidden"
 local LMP_FORMAT_ZONE_TWO_STRINGS = false
 local LMP_FORMAT_ZONE_SINGLE_STRING = true
+-- Transfer from init
+local PIN_TYPE_QUEST_UNCOMPLETED = QuestMap.pinType.uncompleted
+local PIN_TYPE_QUEST_COMPLETED = QuestMap.pinType.completed
+local PIN_TYPE_QUEST_HIDDEN = QuestMap.pinType.hidden
 
 
 -- Function to print text to the chat window including the addon name
@@ -115,34 +116,17 @@ function QuestMap:RefreshPinLayout()
 	LMP:RefreshPins(PIN_TYPE_QUEST_HIDDEN)
 end
 
--- Function to reset pin filters to default
-function QuestMap:ResetPinFilters()
-	QuestMap.settings.pinFilters = {}
-	QuestMap.settings.pinFilters[PIN_TYPE_QUEST_UNCOMPLETED] = true
-	QuestMap.settings.pinFilters[PIN_TYPE_QUEST_COMPLETED] = false
-	QuestMap.settings.pinFilters[PIN_TYPE_QUEST_HIDDEN] = false
-	QuestMap.settings.pinFilters[PIN_TYPE_QUEST_UNCOMPLETED.."_pvp"] = false
-	QuestMap.settings.pinFilters[PIN_TYPE_QUEST_COMPLETED.."_pvp"] = false
-	QuestMap.settings.pinFilters[PIN_TYPE_QUEST_HIDDEN.."_pvp"] = false
+-- Function to refresh pin filters (e.g. from settings menu)
+function QuestMap:RefreshPinFilters()
+	 LMP:SetEnabled(PIN_TYPE_QUEST_UNCOMPLETED, QuestMap.settings.pinFilters[PIN_TYPE_QUEST_UNCOMPLETED])
+	 LMP:SetEnabled(PIN_TYPE_QUEST_COMPLETED,   QuestMap.settings.pinFilters[PIN_TYPE_QUEST_COMPLETED])
+	 LMP:SetEnabled(PIN_TYPE_QUEST_HIDDEN,      QuestMap.settings.pinFilters[PIN_TYPE_QUEST_HIDDEN])
 end
 
 -- Event handler function for EVENT_PLAYER_ACTIVATED
 local function OnPlayerActivated(event)
 	-- Set up SavedVariables table
-	QuestMap.settings = ZO_SavedVars:New("QuestMapSettings", 1, nil, {})
-	if QuestMap.settings.pinSize == nil then QuestMap.settings.pinSize = 25 end
-	if QuestMap.settings.pinLevel == nil then QuestMap.settings.pinLevel = 40 end
-	if QuestMap.settings.hiddenQuests == nil then QuestMap.settings.hiddenQuests = {} end
-	if QuestMap.settings.pinFilters == nil
-	or QuestMap.settings.pinFilters[PIN_TYPE_QUEST_UNCOMPLETED] == nil
-	or QuestMap.settings.pinFilters[PIN_TYPE_QUEST_COMPLETED] == nil
-	or QuestMap.settings.pinFilters[PIN_TYPE_QUEST_HIDDEN] == nil
-	or QuestMap.settings.pinFilters[PIN_TYPE_QUEST_UNCOMPLETED.."_pvp"] == nil
-	or QuestMap.settings.pinFilters[PIN_TYPE_QUEST_COMPLETED.."_pvp"] == nil
-	or QuestMap.settings.pinFilters[PIN_TYPE_QUEST_HIDDEN.."_pvp"] == nil then
-		QuestMap:ResetPinFilters()
-	end
-	if QuestMap.settings.displayClickMsg == nil then QuestMap.settings.displayClickMsg = true end
+	QuestMap.settings = ZO_SavedVars:New("QuestMapSettings", 1, nil, QuestMap.savedVarsDefault)
 	
 	-- Get tootip of each individual pin
 	local pinTooltipCreator = {
@@ -162,11 +146,9 @@ local function OnPlayerActivated(event)
 	LMP:AddPinType(PIN_TYPE_QUEST_HIDDEN, function() MapCallbackQuestPins(PIN_TYPE_QUEST_HIDDEN) end, nil, pinLayout, pinTooltipCreator)
 	-- Add map filters
 	LMP:AddPinFilter(PIN_TYPE_QUEST_UNCOMPLETED, "Quests ("..GetString(QUESTMAP_UNCOMPLETED)..")", true, QuestMap.settings.pinFilters)
-	if not QuestMap.settings.pinFilters[PIN_TYPE_QUEST_UNCOMPLETED] then LMP:Disable(PIN_TYPE_QUEST_UNCOMPLETED) end
 	LMP:AddPinFilter(PIN_TYPE_QUEST_COMPLETED, "Quests ("..GetString(QUESTMAP_COMPLETED)..")", true, QuestMap.settings.pinFilters)
-	if not QuestMap.settings.pinFilters[PIN_TYPE_QUEST_COMPLETED] then LMP:Disable(PIN_TYPE_QUEST_COMPLETED) end
 	LMP:AddPinFilter(PIN_TYPE_QUEST_HIDDEN, "Quests ("..GetString(QUESTMAP_HIDDEN)..")", true, QuestMap.settings.pinFilters)
-	if not QuestMap.settings.pinFilters[PIN_TYPE_QUEST_HIDDEN] then LMP:Disable(PIN_TYPE_QUEST_HIDDEN) end
+	QuestMap:RefreshPinFilters()
 	-- Add click action for pins
 	LMP:SetClickHandlers(PIN_TYPE_QUEST_UNCOMPLETED, {[1] = {name = function(pin) return zo_strformat(GetString(QUESTMAP_HIDE).." |cFFFFFF<<1>>|r", QuestMap:GetQuestName(pin.m_PinTag.id)) end,
 		show = function(pin) return true end,

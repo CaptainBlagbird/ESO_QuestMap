@@ -15,7 +15,11 @@ local panelData = {
 	slashCommand = "/questmap",	--(optional) will register a keybind to open to this panel
 	registerForRefresh = true,	--boolean (optional) (will refresh all options controls when a setting is changed and when the panel is shown)
 	registerForDefaults = true,	--boolean (optional) (will set all options controls back to default values)
-	resetFunc = function() QuestMap:ResetPinFilters() end,	--function (optional) if registerForDefaults is true, this custom function will run after settings are reset to defaults
+	resetFunc = function()
+					-- Also reset pin filters. The only thing in the saved variables will be the hidden quests (QuestMap.settings.hiddenQuests)
+					QuestMap.settings.pinFilters = QuestMap.savedVarsDefault.pinFilters
+					QuestMap:RefreshPinFilters()
+				end,	--function (optional) if registerForDefaults is true, this custom function will run after settings are reset to defaults
 }
 
 local function ChangePinSize(value)
@@ -37,7 +41,7 @@ local optionsTable = {
 						QuestMap:RefreshPinLayout()
 					end,
 		width = "full",
-		default = 25,
+		default = QuestMap.savedVarsDefault.pinSize,
 	},
 	[2] = {
 		type = "slider",
@@ -52,7 +56,7 @@ local optionsTable = {
 						QuestMap:RefreshPinLayout()
 					end,
 		width = "full",
-		default = 40,
+		default = QuestMap.savedVarsDefault.pinLevel,
 	},
 	[3] = {
 		type = "checkbox",
@@ -60,7 +64,7 @@ local optionsTable = {
 		tooltip = GetString(QUESTMAP_MENU_DISP_MSG_TT),
 		getFunc = function() return QuestMap.settings.displayClickMsg end,
 		setFunc = function(value) QuestMap.settings.displayClickMsg = value end,
-		default = true,
+		default = QuestMap.savedVarsDefault.displayClickMsg,
 		width = "full",
 	},
 	[4] = {
@@ -84,9 +88,7 @@ local optionsTable = {
 		type = "button",
 		name = GetString(QUESTMAP_MENU_RESET_HIDDEN),
 		tooltip = GetString(QUESTMAP_MENU_RESET_HIDDEN_TT),
-		func = function()
-				QuestMap.settings.hiddenQuests = {}
-				end,
+		func = function() QuestMap.settings.hiddenQuests = {} end,
 		width = "half",
 		warning = GetString(QUESTMAP_MENU_RESET_HIDDEN_W),
 	},
