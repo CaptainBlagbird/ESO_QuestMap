@@ -15971,6 +15971,13 @@ local zones = {
 			y = 0.643,
 		},
 	},
+	["eastmarch/thebastardstomb_base"] = {
+		[1] = {
+			id = 4585,
+			x = 0.665,
+			y = 0.479,
+		},
+	},
 }
 
 function QuestMap:GetQuestList(zone)
