@@ -78,7 +78,7 @@ local function MapCallbackQuestPins(pinType)
 		local name = QuestMap:GetQuestName(quests.id)
 		if name ~= "" then
 			-- Create table with name and id (only name will be visible in tooltip because key for id is "id" and not index
-			local pinInfo = {"|cFFFFFF"..name}			
+			local pinInfo = {"|cFFFFFF"..name}
 			pinInfo.id = quests.id
 			-- Create pins for corresponding category
 			if completed[quests.id] then
@@ -145,9 +145,9 @@ local function OnPlayerActivated(event)
 	LMP:AddPinType(PIN_TYPE_QUEST_COMPLETED, function() MapCallbackQuestPins(PIN_TYPE_QUEST_COMPLETED) end, nil, pinLayout, pinTooltipCreator)
 	LMP:AddPinType(PIN_TYPE_QUEST_HIDDEN, function() MapCallbackQuestPins(PIN_TYPE_QUEST_HIDDEN) end, nil, pinLayout, pinTooltipCreator)
 	-- Add map filters
-	LMP:AddPinFilter(PIN_TYPE_QUEST_UNCOMPLETED, "Quests ("..GetString(QUESTMAP_UNCOMPLETED)..")", true, QuestMap.settings.pinFilters)
-	LMP:AddPinFilter(PIN_TYPE_QUEST_COMPLETED, "Quests ("..GetString(QUESTMAP_COMPLETED)..")", true, QuestMap.settings.pinFilters)
-	LMP:AddPinFilter(PIN_TYPE_QUEST_HIDDEN, "Quests ("..GetString(QUESTMAP_HIDDEN)..")", true, QuestMap.settings.pinFilters)
+	LMP:AddPinFilter(PIN_TYPE_QUEST_UNCOMPLETED, GetString(QUESTMAP_QUESTS).." ("..GetString(QUESTMAP_UNCOMPLETED)..")", true, QuestMap.settings.pinFilters)
+	LMP:AddPinFilter(PIN_TYPE_QUEST_COMPLETED, GetString(QUESTMAP_QUESTS).." ("..GetString(QUESTMAP_COMPLETED)..")", true, QuestMap.settings.pinFilters)
+	LMP:AddPinFilter(PIN_TYPE_QUEST_HIDDEN, GetString(QUESTMAP_QUESTS).." ("..GetString(QUESTMAP_HIDDEN)..")", true, QuestMap.settings.pinFilters)
 	QuestMap:RefreshPinFilters()
 	-- Add click action for pins
 	LMP:SetClickHandlers(PIN_TYPE_QUEST_UNCOMPLETED, {[1] = {name = function(pin) return zo_strformat(GetString(QUESTMAP_HIDE).." |cFFFFFF<<1>>|r", QuestMap:GetQuestName(pin.m_PinTag.id)) end,
