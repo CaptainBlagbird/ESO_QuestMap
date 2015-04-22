@@ -88,7 +88,10 @@ local optionsTable = {
 		type = "button",
 		name = GetString(QUESTMAP_MENU_RESET_HIDDEN),
 		tooltip = GetString(QUESTMAP_MENU_RESET_HIDDEN_TT),
-		func = function() QuestMap.settings.hiddenQuests = {} end,
+		func = function()
+					QuestMap.settings.hiddenQuests = {}
+					QuestMap:RefreshPinLayout()
+				end,
 		width = "half",
 		warning = GetString(QUESTMAP_MENU_RESET_HIDDEN_W),
 	},
