@@ -71,31 +71,31 @@ local function MapCallbackQuestPins(pinType)
 	-- Get currently displayed zone and subzone from texture
 	local zone = LMP:GetZoneAndSubzone(LMP_FORMAT_ZONE_SINGLE_STRING)
 	-- Get quest list for that zone from database
-	local questslist = QuestMap:GetQuestList(zone)
+	local questlist = QuestMap:GetQuestList(zone)
 	-- For each quest, create a map pin with the quest name
-	for _, quests in ipairs(questslist) do
+	for _, quest in ipairs(questlist) do
 		-- Get quest name and only continue if string isn't empty
-		local name = QuestMap:GetQuestName(quests.id)
+		local name = QuestMap:GetQuestName(quest.id)
 		if name ~= "" then
 			-- Create table with name and id (only name will be visible in tooltip because key for id is "id" and not index
 			local pinInfo = {"|cFFFFFF"..name}
-			pinInfo.id = quests.id
+			pinInfo.id = quest.id
 			-- Create pins for corresponding category
-			if completed[quests.id] then
+			if completed[quest.id] then
 				if pinType == PIN_TYPE_QUEST_COMPLETED or pinType == nil then
 					pinInfo[2] = "["..GetString(QUESTMAP_COMPLETED).."]"
-					LMP:CreatePin(PIN_TYPE_QUEST_COMPLETED, pinInfo, quests.x, quests.y)
+					LMP:CreatePin(PIN_TYPE_QUEST_COMPLETED, pinInfo, quest.x, quest.y)
 				end
-			else
-				if QuestMap.settings.hiddenQuests[quests.id] == nil then
+			else  -- Uncompleted
+				if QuestMap.settings.hiddenQuests[quest.id] == nil then
 					if pinType == PIN_TYPE_QUEST_UNCOMPLETED or pinType == nil then
 						pinInfo[2] = "["..GetString(QUESTMAP_UNCOMPLETED).."]"
-						LMP:CreatePin(PIN_TYPE_QUEST_UNCOMPLETED, pinInfo, quests.x, quests.y)
+						LMP:CreatePin(PIN_TYPE_QUEST_UNCOMPLETED, pinInfo, quest.x, quest.y)
 					end
-				else
+				else  -- Manually hidden
 					if pinType == PIN_TYPE_QUEST_HIDDEN or pinType == nil then
 						pinInfo[2] = "["..GetString(QUESTMAP_HIDDEN).."]"
-						LMP:CreatePin(PIN_TYPE_QUEST_HIDDEN, pinInfo, quests.x, quests.y)
+						LMP:CreatePin(PIN_TYPE_QUEST_HIDDEN, pinInfo, quest.x, quest.y)
 					end
 				end
 			end
@@ -118,9 +118,9 @@ end
 
 -- Function to refresh pin filters (e.g. from settings menu)
 function QuestMap:RefreshPinFilters()
-	 LMP:SetEnabled(PIN_TYPE_QUEST_UNCOMPLETED, QuestMap.settings.pinFilters[PIN_TYPE_QUEST_UNCOMPLETED])
-	 LMP:SetEnabled(PIN_TYPE_QUEST_COMPLETED,   QuestMap.settings.pinFilters[PIN_TYPE_QUEST_COMPLETED])
-	 LMP:SetEnabled(PIN_TYPE_QUEST_HIDDEN,      QuestMap.settings.pinFilters[PIN_TYPE_QUEST_HIDDEN])
+	LMP:SetEnabled(PIN_TYPE_QUEST_UNCOMPLETED, QuestMap.settings.pinFilters[PIN_TYPE_QUEST_UNCOMPLETED])
+	LMP:SetEnabled(PIN_TYPE_QUEST_COMPLETED,   QuestMap.settings.pinFilters[PIN_TYPE_QUEST_COMPLETED])
+	LMP:SetEnabled(PIN_TYPE_QUEST_HIDDEN,      QuestMap.settings.pinFilters[PIN_TYPE_QUEST_HIDDEN])
 end
 
 -- Event handler function for EVENT_PLAYER_ACTIVATED
@@ -138,7 +138,7 @@ local function OnPlayerActivated(event)
 		end,
 		tooltip = 1, -- Delete the line above and uncomment this line for Update 6
 	}
-	-- Add a new pin types for quests
+	-- Add new pin types for quests
 	local pinLayout = {level = QuestMap.settings.pinLevel, texture = "QuestMap/icons/pinQuestUncompleted.dds", size = QuestMap.settings.pinSize}
 	LMP:AddPinType(PIN_TYPE_QUEST_UNCOMPLETED, function() MapCallbackQuestPins(PIN_TYPE_QUEST_UNCOMPLETED) end, nil, pinLayout, pinTooltipCreator)
 	pinLayout = {level = QuestMap.settings.pinLevel, texture = "QuestMap/icons/pinQuestCompleted.dds", size = QuestMap.settings.pinSize}
