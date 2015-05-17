@@ -77,24 +77,34 @@ local function MapCallbackQuestPins(pinType)
 		-- Get quest name and only continue if string isn't empty
 		local name = QuestMap:GetQuestName(quest.id)
 		if name ~= "" then
+			-- Get quest type info
+			local isSkillQuest, isCadwellQuest = QuestMap:GetQuestType(quest.id)
 			-- Create table with name and id (only name will be visible in tooltip because key for id is "id" and not index
 			local pinInfo = {"|cFFFFFF"..name}
 			pinInfo.id = quest.id
+			-- Add quest type info to tooltip data
+			if isSkillQuest or isCadwellQuest then
+				pinInfo[2] = "["
+				if isSkillQuest then pinInfo[2] = pinInfo[2]..GetString(QUESTMAP_SKILL) end
+				if isSkillQuest and isCadwellQuest then pinInfo[2] = pinInfo[2]..", " end
+				if isCadwellQuest then pinInfo[2] = pinInfo[2]..GetString(QUESTMAP_CADWELL) end
+				pinInfo[2] = pinInfo[2].."]"
+			end
 			-- Create pins for corresponding category
 			if completed[quest.id] then
 				if pinType == PIN_TYPE_QUEST_COMPLETED or pinType == nil then
-					pinInfo[2] = "["..GetString(QUESTMAP_COMPLETED).."]"
+					pinInfo[1] = pinInfo[1].." |c888888(X)"
 					LMP:CreatePin(PIN_TYPE_QUEST_COMPLETED, pinInfo, quest.x, quest.y)
 				end
 			else  -- Uncompleted
 				if QuestMap.settings.hiddenQuests[quest.id] == nil then
 					if pinType == PIN_TYPE_QUEST_UNCOMPLETED or pinType == nil then
-						pinInfo[2] = "["..GetString(QUESTMAP_UNCOMPLETED).."]"
+						pinInfo[1] = pinInfo[1].." |c888888(  )"
 						LMP:CreatePin(PIN_TYPE_QUEST_UNCOMPLETED, pinInfo, quest.x, quest.y)
 					end
 				else  -- Manually hidden
 					if pinType == PIN_TYPE_QUEST_HIDDEN or pinType == nil then
-						pinInfo[2] = "["..GetString(QUESTMAP_HIDDEN).."]"
+						pinInfo[1] = pinInfo[1].." |c888888(+)"
 						LMP:CreatePin(PIN_TYPE_QUEST_HIDDEN, pinInfo, quest.x, quest.y)
 					end
 				end

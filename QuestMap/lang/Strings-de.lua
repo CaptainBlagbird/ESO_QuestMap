@@ -10,6 +10,8 @@ https://github.com/CaptainBlagbird
 SafeAddString( QUESTMAP_COMPLETED,             "Erledigt", 1)
 SafeAddString( QUESTMAP_UNCOMPLETED,           "Unerledigt", 1)
 SafeAddString( QUESTMAP_HIDDEN,                "Manuell ausgeblendet", 1)
+SafeAddString( QUESTMAP_CADWELL,               "Cadwells Almanach", 1)
+SafeAddString( QUESTMAP_SKILL,                 "Fertigkeitspunkt", 1)
 
 SafeAddString( QUESTMAP_HIDE,                  "Quest ausblenden", 1)
 SafeAddString( QUESTMAP_UNHIDE,                "Quest einblenden", 1)

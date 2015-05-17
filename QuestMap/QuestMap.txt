@@ -26,6 +26,7 @@ libs/LibMapPins-1.0/LibMapPins-1.0.lua
 Init.lua
 data/ZoneQuests.lua
 data/QuestNames.lua
+data/QuestTypes.lua
 lang/Strings.lua
 
 ; Language overwrite
