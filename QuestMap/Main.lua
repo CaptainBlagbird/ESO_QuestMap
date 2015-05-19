@@ -14,8 +14,8 @@ local LMP_FORMAT_ZONE_TWO_STRINGS = false
 local LMP_FORMAT_ZONE_SINGLE_STRING = true
 -- Transfer from init
 local PIN_TYPE_QUEST_UNCOMPLETED = QuestMap.pinType.uncompleted
-local PIN_TYPE_QUEST_COMPLETED = QuestMap.pinType.completed
-local PIN_TYPE_QUEST_HIDDEN = QuestMap.pinType.hidden
+local PIN_TYPE_QUEST_COMPLETED   = QuestMap.pinType.completed
+local PIN_TYPE_QUEST_HIDDEN      = QuestMap.pinType.hidden
 
 
 -- Function to print text to the chat window including the addon name
@@ -53,12 +53,11 @@ local function RemoveQuestsCompletedFromHidden()
 		-- If current quest was in the list of manually hidden quests, remove it from there
 		if QuestMap.settings.hiddenQuests[id] ~= nil then QuestMap.settings.hiddenQuests[id] = nil end
 	end
-	return completed
 end
 
 -- Callback function which is called every time another map is viewed, creates quest pins
 -- pinType = nil for all quest pin types
-local function MapCallbackQuestPins(pinType)
+local function MapCallbackQuestPins(pinType)	
 	if not LMP:IsEnabled(PIN_TYPE_QUEST_UNCOMPLETED)
 	and not LMP:IsEnabled(PIN_TYPE_QUEST_COMPLETED)
 	and not LMP:IsEnabled(PIN_TYPE_QUEST_HIDDEN) then
