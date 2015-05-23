@@ -110,7 +110,6 @@ function QuestMap:RefreshPins()
 end
 
 -- Callback function which is called every time another map is viewed, creates quest pins
--- pinType = nil for all quest pin types
 local function MapCallbackQuestPins(pinType)
 	if not LMP:IsEnabled(PIN_TYPE_QUEST_UNCOMPLETED)
 	and not LMP:IsEnabled(PIN_TYPE_QUEST_COMPLETED)
@@ -145,7 +144,7 @@ local function MapCallbackQuestPins(pinType)
 			end
 			-- Create pins for corresponding category
 			if completed[quest.id] then
-				if pinType == PIN_TYPE_QUEST_COMPLETED or pinType == nil then
+				if pinType == PIN_TYPE_QUEST_COMPLETED then
 					if not LMP:IsEnabled(PIN_TYPE_QUEST_CADWELL) and not LMP:IsEnabled(PIN_TYPE_QUEST_SKILL)
 					or LMP:IsEnabled(PIN_TYPE_QUEST_CADWELL) and isCadwellQuest
 					or LMP:IsEnabled(PIN_TYPE_QUEST_SKILL) and isSkillQuest then
@@ -155,7 +154,7 @@ local function MapCallbackQuestPins(pinType)
 				end
 			else  -- Uncompleted
 				if QuestMap.settings.hiddenQuests[quest.id] == nil then
-					if pinType == PIN_TYPE_QUEST_UNCOMPLETED or pinType == nil then
+					if pinType == PIN_TYPE_QUEST_UNCOMPLETED then
 						if not LMP:IsEnabled(PIN_TYPE_QUEST_CADWELL) and not LMP:IsEnabled(PIN_TYPE_QUEST_SKILL)
 						or LMP:IsEnabled(PIN_TYPE_QUEST_CADWELL) and isCadwellQuest
 						or LMP:IsEnabled(PIN_TYPE_QUEST_SKILL) and isSkillQuest then
@@ -164,7 +163,7 @@ local function MapCallbackQuestPins(pinType)
 						end
 					end
 				else  -- Manually hidden
-					if pinType == PIN_TYPE_QUEST_HIDDEN or pinType == nil then
+					if pinType == PIN_TYPE_QUEST_HIDDEN then
 						if not LMP:IsEnabled(PIN_TYPE_QUEST_CADWELL) and not LMP:IsEnabled(PIN_TYPE_QUEST_SKILL)
 						or LMP:IsEnabled(PIN_TYPE_QUEST_CADWELL) and isCadwellQuest
 						or LMP:IsEnabled(PIN_TYPE_QUEST_SKILL) and isSkillQuest then
@@ -269,11 +268,9 @@ end
 
 -- Event handler function for EVENT_QUEST_COMPLETE
 local function OnQuestComplete(event, name, lvl, pXP, cXP, rnk, pPoints, cPoints)
-	-- Refresh map pins
-	MapCallbackQuestPins()
-	QuestMap:RefreshPins()
-	-- Clean up list with hidden quests
+	-- Clean up list with hidden quests and refresh map pins
 	RemoveQuestsCompletedFromHidden()
+	QuestMap:RefreshPins()
 end
 
 
