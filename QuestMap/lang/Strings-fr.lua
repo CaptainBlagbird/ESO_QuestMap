@@ -20,6 +20,7 @@ SafeAddString( QUESTMAP_MSG_HIDDEN,            "Quête cachée", 1)
 SafeAddString( QUESTMAP_MSG_UNHIDDEN,          "Quête rendues visible", 1)
 
 SafeAddString( QUESTMAP_QUESTS,                "Quêtes", 1)
+SafeAddString( QUESTMAP_QUEST_SUBFILTER,       "Sous-filtre", 1)
 
 -- Settings menu
 SafeAddString( QUESTMAP_MENU_PIN_SIZE,         "Taille marqueur sur la carte", 1)

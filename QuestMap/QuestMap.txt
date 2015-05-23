@@ -1,5 +1,5 @@
-## Title: Quest Map |c555555v1.4|r
-## Version: 1.4
+## Title: Quest Map |c555555v1.5|r
+## Version: 1.5
 ## Author: |c70C0DECaptainBlagbird|r
 ## APIVersion: 100011
 ## Description: Displays quest givers on the world map

@@ -21,6 +21,7 @@ local strings = {
 	QUESTMAP_MSG_UNHIDDEN         = "Quest unhidden",
 	
 	QUESTMAP_QUESTS               = "Quests",
+	QUESTMAP_QUEST_SUBFILTER      = "Subfilter",
 	
 	-- Settings menu
 	QUESTMAP_MENU_PIN_SIZE        = "Map pin size",

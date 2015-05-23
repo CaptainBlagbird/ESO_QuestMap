@@ -20,6 +20,7 @@ SafeAddString( QUESTMAP_MSG_HIDDEN,            "Quest ausgeblendet", 1)
 SafeAddString( QUESTMAP_MSG_UNHIDDEN,          "Quest eingeblendet", 1)
 
 SafeAddString( QUESTMAP_QUESTS,                "Quests", 1)
+SafeAddString( QUESTMAP_QUEST_SUBFILTER,       "Subfilter", 1)
 
 -- Settings menu
 SafeAddString( QUESTMAP_MENU_PIN_SIZE,         "Grösse der Kartenmarkierung", 1)

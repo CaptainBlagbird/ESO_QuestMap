@@ -16,7 +16,54 @@ local LMP_FORMAT_ZONE_SINGLE_STRING = true
 local PIN_TYPE_QUEST_UNCOMPLETED = QuestMap.pinType.uncompleted
 local PIN_TYPE_QUEST_COMPLETED   = QuestMap.pinType.completed
 local PIN_TYPE_QUEST_HIDDEN      = QuestMap.pinType.hidden
+local PIN_TYPE_QUEST_CADWELL     = QuestMap.pinType.cadwell
+local PIN_TYPE_QUEST_SKILL       = QuestMap.pinType.skill
 
+
+-- Library hack to be able to detect when a map pin filter gets unchecked (overwrite RemovePins function)
+local function SetFilterToggleCallback(pinType, positiveToggle, func)
+	if type(func) ~= "function" or (type(pinType) ~= "string" and type(pinType) ~= "number") then return end
+	-- Convert pinTypeString to pinTypeId
+	if type(pinType) == "string" then
+		pinType = _G[pinType]
+	end
+	
+	local isFirstRun = false
+	if LMP.FilterToggleHandlers == nil then
+		isFirstRun = true
+		LMP.FilterToggleHandlers = {}
+		LMP.FilterToggleHandlers.positiveToggle = {}
+		LMP.FilterToggleHandlers.negativeToggle = {}
+	end
+	
+	-- Add to list
+	if positiveToggle then
+		LMP.FilterToggleHandlers.positiveToggle[pinType] = func
+	else
+		LMP.FilterToggleHandlers.negativeToggle[pinType] = func
+	end
+	
+	if isFirstRun then
+		-- Update SetCustomPinEnabled function
+		local oldSetCustomPinEnabled = LMP.pinManager.SetCustomPinEnabled
+		local function newSetCustomPinEnabled(t, pinTypeId, enabled)
+			oldSetCustomPinEnabled(t, pinTypeId, enabled)
+			-- Run callback function
+			if enabled then
+				-- Filter enabled
+				if LMP.FilterToggleHandlers.positiveToggle[pinType] ~= nil then
+					LMP.FilterToggleHandlers.positiveToggle[pinType]()
+				end
+			else
+				-- Filter disabled
+				if LMP.FilterToggleHandlers.negativeToggle[pinType] ~= nil then
+					LMP.FilterToggleHandlers.negativeToggle[pinType]()
+				end
+			end
+		end
+		LMP.pinManager.SetCustomPinEnabled = newSetCustomPinEnabled
+	end
+end
 
 -- Function to print text to the chat window including the addon name
 local function p(s)
@@ -55,9 +102,16 @@ local function RemoveQuestsCompletedFromHidden()
 	end
 end
 
+-- Function to refresh pins
+function QuestMap:RefreshPins()
+	LMP:RefreshPins(PIN_TYPE_QUEST_COMPLETED)
+	LMP:RefreshPins(PIN_TYPE_QUEST_UNCOMPLETED)
+	LMP:RefreshPins(PIN_TYPE_QUEST_HIDDEN)
+end
+
 -- Callback function which is called every time another map is viewed, creates quest pins
 -- pinType = nil for all quest pin types
-local function MapCallbackQuestPins(pinType)	
+local function MapCallbackQuestPins(pinType)
 	if not LMP:IsEnabled(PIN_TYPE_QUEST_UNCOMPLETED)
 	and not LMP:IsEnabled(PIN_TYPE_QUEST_COMPLETED)
 	and not LMP:IsEnabled(PIN_TYPE_QUEST_HIDDEN) then
@@ -92,19 +146,31 @@ local function MapCallbackQuestPins(pinType)
 			-- Create pins for corresponding category
 			if completed[quest.id] then
 				if pinType == PIN_TYPE_QUEST_COMPLETED or pinType == nil then
-					pinInfo[1] = pinInfo[1].." |c888888(X)"
-					LMP:CreatePin(PIN_TYPE_QUEST_COMPLETED, pinInfo, quest.x, quest.y)
+					if not LMP:IsEnabled(PIN_TYPE_QUEST_CADWELL) and not LMP:IsEnabled(PIN_TYPE_QUEST_SKILL)
+					or LMP:IsEnabled(PIN_TYPE_QUEST_CADWELL) and isCadwellQuest
+					or LMP:IsEnabled(PIN_TYPE_QUEST_SKILL) and isSkillQuest then
+						pinInfo[1] = pinInfo[1].." |c888888(X)"
+						LMP:CreatePin(PIN_TYPE_QUEST_COMPLETED, pinInfo, quest.x, quest.y)
+					end
 				end
 			else  -- Uncompleted
 				if QuestMap.settings.hiddenQuests[quest.id] == nil then
 					if pinType == PIN_TYPE_QUEST_UNCOMPLETED or pinType == nil then
-						pinInfo[1] = pinInfo[1].." |c888888(  )"
-						LMP:CreatePin(PIN_TYPE_QUEST_UNCOMPLETED, pinInfo, quest.x, quest.y)
+						if not LMP:IsEnabled(PIN_TYPE_QUEST_CADWELL) and not LMP:IsEnabled(PIN_TYPE_QUEST_SKILL)
+						or LMP:IsEnabled(PIN_TYPE_QUEST_CADWELL) and isCadwellQuest
+						or LMP:IsEnabled(PIN_TYPE_QUEST_SKILL) and isSkillQuest then
+							pinInfo[1] = pinInfo[1].." |c888888(  )"
+							LMP:CreatePin(PIN_TYPE_QUEST_UNCOMPLETED, pinInfo, quest.x, quest.y)
+						end
 					end
 				else  -- Manually hidden
 					if pinType == PIN_TYPE_QUEST_HIDDEN or pinType == nil then
-						pinInfo[1] = pinInfo[1].." |c888888(+)"
-						LMP:CreatePin(PIN_TYPE_QUEST_HIDDEN, pinInfo, quest.x, quest.y)
+						if not LMP:IsEnabled(PIN_TYPE_QUEST_CADWELL) and not LMP:IsEnabled(PIN_TYPE_QUEST_SKILL)
+						or LMP:IsEnabled(PIN_TYPE_QUEST_CADWELL) and isCadwellQuest
+						or LMP:IsEnabled(PIN_TYPE_QUEST_SKILL) and isSkillQuest then
+							pinInfo[1] = pinInfo[1].." |c888888(+)"
+							LMP:CreatePin(PIN_TYPE_QUEST_HIDDEN, pinInfo, quest.x, quest.y)
+						end
 					end
 				end
 			end
@@ -130,6 +196,8 @@ function QuestMap:RefreshPinFilters()
 	LMP:SetEnabled(PIN_TYPE_QUEST_UNCOMPLETED, QuestMap.settings.pinFilters[PIN_TYPE_QUEST_UNCOMPLETED])
 	LMP:SetEnabled(PIN_TYPE_QUEST_COMPLETED,   QuestMap.settings.pinFilters[PIN_TYPE_QUEST_COMPLETED])
 	LMP:SetEnabled(PIN_TYPE_QUEST_HIDDEN,      QuestMap.settings.pinFilters[PIN_TYPE_QUEST_HIDDEN])
+	LMP:SetEnabled(PIN_TYPE_QUEST_SKILL,       QuestMap.settings.pinFilters[PIN_TYPE_QUEST_SKILL])
+	LMP:SetEnabled(PIN_TYPE_QUEST_CADWELL,     QuestMap.settings.pinFilters[PIN_TYPE_QUEST_CADWELL])
 end
 
 -- Event handler function for EVENT_PLAYER_ACTIVATED
@@ -158,6 +226,16 @@ local function OnPlayerActivated(event)
 	LMP:AddPinFilter(PIN_TYPE_QUEST_COMPLETED, GetString(QUESTMAP_QUESTS).." ("..GetString(QUESTMAP_COMPLETED)..")", true, QuestMap.settings.pinFilters)
 	LMP:AddPinFilter(PIN_TYPE_QUEST_HIDDEN, GetString(QUESTMAP_QUESTS).." ("..GetString(QUESTMAP_HIDDEN)..")", true, QuestMap.settings.pinFilters)
 	QuestMap:RefreshPinFilters()
+	-- Add subfilters (filters for filters); AddPinType needed or else the filters wont show up
+	LMP:AddPinType(PIN_TYPE_QUEST_CADWELL, function() end, nil, pinLayout, pinTooltipCreator)
+	LMP:AddPinType(PIN_TYPE_QUEST_SKILL, function() end, nil, pinLayout, pinTooltipCreator)
+	LMP:AddPinFilter(PIN_TYPE_QUEST_CADWELL, "|c888888"..GetString(QUESTMAP_QUEST_SUBFILTER).." ("..GetString(QUESTMAP_CADWELL)..")", true, QuestMap.settings.pinFilters)
+	LMP:AddPinFilter(PIN_TYPE_QUEST_SKILL, "|c888888"..GetString(QUESTMAP_QUEST_SUBFILTER).." ("..GetString(QUESTMAP_SKILL)..")", true, QuestMap.settings.pinFilters)
+	-- Set callback functions for (un)checking subfilters
+	SetFilterToggleCallback(PIN_TYPE_QUEST_CADWELL, true,  function() QuestMap:RefreshPins() end)
+	SetFilterToggleCallback(PIN_TYPE_QUEST_CADWELL, false, function() QuestMap:RefreshPins() end)
+	SetFilterToggleCallback(PIN_TYPE_QUEST_SKILL,   true,  function() QuestMap:RefreshPins() end)
+	SetFilterToggleCallback(PIN_TYPE_QUEST_SKILL,   false, function() QuestMap:RefreshPins() end)
 	-- Add click action for pins
 	LMP:SetClickHandlers(PIN_TYPE_QUEST_UNCOMPLETED, {[1] = {name = function(pin) return zo_strformat(GetString(QUESTMAP_HIDE).." |cFFFFFF<<1>>|r", QuestMap:GetQuestName(pin.m_PinTag.id)) end,
 		show = function(pin) return true end,
@@ -193,9 +271,7 @@ end
 local function OnQuestComplete(event, name, lvl, pXP, cXP, rnk, pPoints, cPoints)
 	-- Refresh map pins
 	MapCallbackQuestPins()
-	LMP:RefreshPins(PIN_TYPE_QUEST_UNCOMPLETED)
-	LMP:RefreshPins(PIN_TYPE_QUEST_COMPLETED)
-	LMP:RefreshPins(PIN_TYPE_QUEST_HIDDEN)
+	QuestMap:RefreshPins()
 	-- Clean up list with hidden quests
 	RemoveQuestsCompletedFromHidden()
 end
