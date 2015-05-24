@@ -19,9 +19,14 @@ local strings = {
 	
 	QUESTMAP_MSG_HIDDEN           = "Quest hidden",
 	QUESTMAP_MSG_UNHIDDEN         = "Quest unhidden",
+	QUESTMAP_MSG_HIDDEN_P         = "Quests hidden",
+	QUESTMAP_MSG_UNHIDDEN_P       = "Quests unhidden",
 	
 	QUESTMAP_QUESTS               = "Quests",
 	QUESTMAP_QUEST_SUBFILTER      = "Subfilter",
+	
+	QUESTMAP_SLASH_USAGE          = "Please use an argument after the command:\n 'hide' - Hide all quests on the current map\n 'unhide' - Unhide all quests on the current map",
+	QUESTMAP_SLASH_MAPINFO        = "Please open the map first.",
 	
 	-- Settings menu
 	QUESTMAP_MENU_PIN_SIZE        = "Map pin size",
@@ -33,12 +38,16 @@ local strings = {
 	QUESTMAP_MENU_DISP_MSG        = "Display quest (un)hidden message",
 	QUESTMAP_MENU_DISP_MSG_TT     = "Enable/disable message that is displayed when (un)hiding pins",
 	
-	QUESTMAP_MENU_NOTE_1          = "Note: 'Reset to Defaults' does NOT reset manually hidden quest pins.",
-	QUESTMAP_MENU_NOTE_2          = "If you want to clear ALL manually hidden quest pins at once, you can use this button:",
+	QUESTMAP_MENU_HIDDEN_QUESTS_T = "Manually hide quests",
+	QUESTMAP_MENU_HIDDEN_QUESTS_1 = "You can manually (un)hide quest pins by clicking on them. (To see hidden quest pins, activate the map pin filter to the right of the map.)",
+	QUESTMAP_MENU_HIDDEN_QUESTS_2 = "To (un)hide all quest pins in a map at once, you can use the chat command '/qm hide' or '/qm unhide'.",
+	QUESTMAP_MENU_HIDDEN_QUESTS_B = "If you want to clear ALL manually hidden quest pins at once, you can use this button:",
 	
 	QUESTMAP_MENU_RESET_HIDDEN    = "Reset hidden pins",
 	QUESTMAP_MENU_RESET_HIDDEN_TT = "Reset manually hidden pins",
 	QUESTMAP_MENU_RESET_HIDDEN_W  = "Cannot be undone!",
+	
+	QUESTMAP_MENU_RESET_NOTE      = "Note: 'Reset to Defaults' does NOT reset manually hidden quest pins.",
 }
 
 for key, value in pairs(strings) do

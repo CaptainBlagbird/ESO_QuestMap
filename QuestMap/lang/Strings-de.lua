@@ -18,9 +18,14 @@ SafeAddString( QUESTMAP_UNHIDE,                "Quest einblenden", 1)
 
 SafeAddString( QUESTMAP_MSG_HIDDEN,            "Quest ausgeblendet", 1)
 SafeAddString( QUESTMAP_MSG_UNHIDDEN,          "Quest eingeblendet", 1)
+SafeAddString( QUESTMAP_MSG_HIDDEN_P,          "Quests ausgeblendet", 1)
+SafeAddString( QUESTMAP_MSG_UNHIDDEN_P,        "Quests eingeblendet", 1)
 
 SafeAddString( QUESTMAP_QUESTS,                "Quests", 1)
 SafeAddString( QUESTMAP_QUEST_SUBFILTER,       "Subfilter", 1)
+
+SafeAddString( QUESTMAP_SLASH_USAGE,           "Bitte verwende ein Argument nach dem Befehl:\n 'hide' - Alle quests in der aktuellen Karte ausblenden\n 'unhide' - Alle quests in der aktuellen Karte einblenden", 1)
+SafeAddString( QUESTMAP_SLASH_MAPINFO,         "Bitte erst die Karte öffnen.", 1)
 
 -- Settings menu
 SafeAddString( QUESTMAP_MENU_PIN_SIZE,         "Grösse der Kartenmarkierung", 1)
@@ -29,12 +34,16 @@ SafeAddString( QUESTMAP_MENU_PIN_SIZE_TT,      "Definiert die Anzeigegrösse der
 SafeAddString( QUESTMAP_MENU_PIN_LVL,          "Ebene der Kartenmarkierung", 1)
 SafeAddString( QUESTMAP_MENU_PIN_LVL_TT,       "Definiert auf welcher Ebene die Kartenmarkierungen gezeichnet werden (Standard: "..QuestMap.savedVarsDefault.pinLevel..")", 1)
 
-SafeAddString( QUESTMAP_MENU_DISP_MSG,         "Ein-/ausgeblende-Nachricht anzeigen", 1)
+SafeAddString( QUESTMAP_MENU_DISP_MSG,         "Ein-/ausblende-Nachricht anzeigen", 1)
 SafeAddString( QUESTMAP_MENU_DISP_MSG_TT,      "Ein-/ausschalten der Nachricht die angezeigt wird, wenn Markierungen ein-/ausgeblendet werden", 1)
 
-SafeAddString( QUESTMAP_MENU_NOTE_1,           "Hinweis: 'Standardwerte' setzt die manuell ausgeblendeten Questmarkierungen NICHT zurück.", 1)
-SafeAddString( QUESTMAP_MENU_NOTE_2,           "Willst du ALLE ausgeblendeten Markierungen zurücksetzen, dann benütze diese Schaltfläche:", 1)
+SafeAddString( QUESTMAP_MENU_HIDDEN_QUESTS_T,  "Quests manuell ausblenden", 1)
+SafeAddString( QUESTMAP_MENU_HIDDEN_QUESTS_1,  "Du kannst Questmarkierungen manuell ausblenden indem du sie anklickst. (Um ausgeblendete Questmarkierungen zu sehen, aktiviere den Filter für Kartenmarkierungen rechts neben der Karte.)", 1)
+SafeAddString( QUESTMAP_MENU_HIDDEN_QUESTS_2,  "Zum gleichzeitigen ein-/ausblenden aller Kartenmarkierung einer bestimmten Karte kannst du den Chat-Befehl '/qm hide' oder '/qm unhide' verwenden.", 1)
+SafeAddString( QUESTMAP_MENU_HIDDEN_QUESTS_B,  "Willst du ALLE ausgeblendeten Markierungen zurücksetzen, dann benütze diese Schaltfläche:", 1)
 
 SafeAddString( QUESTMAP_MENU_RESET_HIDDEN,     "Ausgebl. zurücksetzen", 1)
 SafeAddString( QUESTMAP_MENU_RESET_HIDDEN_TT,  "Manuell ausgeblendete Markierungen zurücksetzen", 1)
 SafeAddString( QUESTMAP_MENU_RESET_HIDDEN_W,   "Kann nicht rückgängig gemacht werden!", 1)
+
+SafeAddString( QUESTMAP_MENU_RESET_NOTE,       "Hinweis: 'Standardwerte' setzt die manuell ausgeblendeten Questmarkierungen NICHT zurück.", 1)

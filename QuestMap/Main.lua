@@ -71,6 +71,8 @@ local function p(s)
 	s = "|c70C0DE["..QuestMap.name.."]|r "..s
 	-- Replace regular color (yellow) with ESO golden in this string
 	s = s:gsub("|r", "|cC5C29E")
+	-- Replace newline character with newline + ESO golden (because newline resets color to default yellow)
+	s = s:gsub("\n", "\n|cC5C29E")
 	-- Display message
 	d(s)
 end
@@ -199,6 +201,46 @@ function QuestMap:RefreshPinFilters()
 	LMP:SetEnabled(PIN_TYPE_QUEST_CADWELL,     QuestMap.settings.pinFilters[PIN_TYPE_QUEST_CADWELL])
 end
 
+-- Function to (un)hide all quests on the currently displayed map
+local function SetQuestsInZoneHidden(str)
+	usage = GetString(QUESTMAP_SLASH_USAGE)
+	if type(str) ~= "string" then return end
+	if ZO_WorldMap:IsHidden() then p(GetString(QUESTMAP_SLASH_MAPINFO)); return end
+	local map = LMP:GetZoneAndSubzone(LMP_FORMAT_ZONE_SINGLE_STRING)
+	
+	-- Trim whitespaces from input string
+	argument = str:gsub("^%s*(.-)%s*$", "%1")
+	-- Convert string to lower case
+	argument = str:lower()
+	
+	if str ~= "unhide" and str ~= "hide" then p(usage); return end
+	
+	-- Get quest list for that zone from database
+	local questlist = QuestMap:GetQuestList(map)
+	-- Get completed quests
+	local completed = GetCompletedQuests()
+	
+	if str == "unhide" then
+		for _, quest in ipairs(questlist) do
+			-- Remove from list that holds hidden quests
+			QuestMap.settings.hiddenQuests[quest.id] = nil
+		end
+		if QuestMap.settings.displayClickMsg then p(GetString(QUESTMAP_MSG_UNHIDDEN_P).." @ |cFFFFFF"..LMP:GetZoneAndSubzone(LMP_FORMAT_ZONE_SINGLE_STRING)) end
+	elseif str == "hide" then
+		for _, quest in ipairs(questlist) do
+			-- Hiding only necessary for uncompleted quests
+			if not completed[quest.id] then
+				-- Add to list that holds hidden quests
+				QuestMap.settings.hiddenQuests[quest.id] = QuestMap:GetQuestName(quest.id)
+			end
+		end
+		if QuestMap.settings.displayClickMsg then p(GetString(QUESTMAP_MSG_HIDDEN_P).." @ |cFFFFFF"..LMP:GetZoneAndSubzone(LMP_FORMAT_ZONE_SINGLE_STRING)) end
+	else
+		p(usage)
+		return
+	end
+end
+
 -- Event handler function for EVENT_PLAYER_ACTIVATED
 local function OnPlayerActivated(event)
 	-- Set up SavedVariables table
@@ -262,6 +304,9 @@ local function OnPlayerActivated(event)
 			LMP:RefreshPins(PIN_TYPE_QUEST_UNCOMPLETED)
 			LMP:RefreshPins(PIN_TYPE_QUEST_HIDDEN)
 		end}})
+	
+	-- Register slash command and link function
+	SLASH_COMMANDS["/qm"] = function(str) SetQuestsInZoneHidden(str); QuestMap:RefreshPins() end
 	
 	EVENT_MANAGER:UnregisterForEvent(QuestMap.name, EVENT_PLAYER_ACTIVATED)
 end

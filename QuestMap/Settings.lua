@@ -74,17 +74,23 @@ local optionsTable = {
 	},
 	[5] = {
 		type = "description",
-		title = GetString(QUESTMAP_MENU_NOTE_1),
-		text = "",
+		title = GetString(QUESTMAP_MENU_HIDDEN_QUESTS_T),
+		text = GetString(QUESTMAP_MENU_HIDDEN_QUESTS_1),
 		width = "full",
 	},
 	[6] = {
 		type = "description",
-		title = GetString(QUESTMAP_MENU_NOTE_2),
-		text = "",
-		width = "half",
+		title = "",
+		text = GetString(QUESTMAP_MENU_HIDDEN_QUESTS_2),
+		width = "full",
 	},
 	[7] = {
+		type = "description",
+		title = "",
+		text = GetString(QUESTMAP_MENU_HIDDEN_QUESTS_B),
+		width = "half",
+	},
+	[8] = {
 		type = "button",
 		name = GetString(QUESTMAP_MENU_RESET_HIDDEN),
 		tooltip = GetString(QUESTMAP_MENU_RESET_HIDDEN_TT),
@@ -94,6 +100,12 @@ local optionsTable = {
 				end,
 		width = "half",
 		warning = GetString(QUESTMAP_MENU_RESET_HIDDEN_W),
+	},
+	[9] = {
+		type = "description",
+		title = "",
+		text = GetString(QUESTMAP_MENU_RESET_NOTE),
+		width = "full",
 	},
 }
 
