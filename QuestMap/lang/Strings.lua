@@ -11,6 +11,7 @@ local strings = {
 	QUESTMAP_COMPLETED            = "Completed",
 	QUESTMAP_UNCOMPLETED          = "Uncompleted",
 	QUESTMAP_HIDDEN               = "Manually hidden",
+	QUESTMAP_STARTED              = "Started",
 	QUESTMAP_CADWELL              = "Cadwell's Almanac",
 	QUESTMAP_SKILL                = "Skill point",
 	
