@@ -2081,7 +2081,7 @@ local quests = {
 	[5434] = "Battleground",
 }
 
-local quests = {
+local ids = {
 	["A Sister's Plea"] = 19,
 	["Theft from the Bog"] = 30,
 	["TM01_OUTOFDATE"] = 31,
