@@ -66,6 +66,15 @@ local function SetFilterToggleCallback(pinType, positiveToggle, func)
 	end
 end
 
+-- Function to check for empty table
+local function isEmpty(t)
+	if next(t) == nil then
+		return true
+	else
+		return false
+	end
+end
+
 -- Function to print text to the chat window including the addon name
 local function p(s)
 	-- Add addon name to message
@@ -116,8 +125,38 @@ local function MapCallbackQuestPins(pinType)
 	local zone = LMP:GetZoneAndSubzone(LMP_FORMAT_ZONE_SINGLE_STRING)
 	-- Get quest list for that zone from database
 	local questlist = QuestMap:GetQuestList(zone)
+	
+	-- Also get quests from subzones
+	local subzone_questlist = {}
+	local subzone_questlist_offset = 0
+	local subzonelist = QuestMap:GetSubzoneList(zone)
+	for subzone_name, subzone in pairs(subzonelist) do
+		subzone_questlist_offset = #subzone_questlist
+		-- Get each quest of the subzone
+		local ql = QuestMap:GetQuestList(subzone_name)
+		for i, q in ipairs(ql) do
+			-- Add offset so we don't overwrite the quests of the previous subzone in the big table
+			i = i + subzone_questlist_offset
+			-- Prepare entry in big table
+			subzone_questlist[i] = {}
+			-- Copy values to big table
+			if not isEmpty(q) then
+				subzone_questlist[i].id = q.id
+				-- Convert to correct position (subzone --> zone)
+				subzone_questlist[i].x = (q.x * subzone.zoom_factor) + subzone.x
+				subzone_questlist[i].y = (q.y * subzone.zoom_factor) + subzone.y
+			end
+		end
+	end
+	
 	-- For each quest, create a map pin with the quest name
-	for _, quest in ipairs(questlist) do
+	for i=1,#questlist+#subzone_questlist do
+		local quest
+		if i <= #questlist then
+			quest = questlist[i]
+		else
+			quest = subzone_questlist[i-#questlist]
+		end
 		-- Get quest name and only continue if string isn't empty
 		local name = QuestMap:GetQuestName(quest.id)
 		if name ~= "" then
