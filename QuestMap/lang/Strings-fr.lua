@@ -47,7 +47,7 @@ SafeAddString( QUESTMAP_MENU_RESET_HIDDEN,     "Réinitialiser les marqueurs cac
 SafeAddString( QUESTMAP_MENU_RESET_HIDDEN_TT,  "Réinitialiser les marqueurs de quêtes manuellement cachés", 1)
 SafeAddString( QUESTMAP_MENU_RESET_HIDDEN_W,   "Ne peut pas être annulé!", 1)
 
-SafeAddString( QUESTMAP_MENU_RESET_NOTE,       "Note: 'Réinitialiser' ne réinitialise PAS les marqueurs de quêtes cachés manuellement.", 1)
+SafeAddString( QUESTMAP_MENU_RESET_NOTE,       "Remarque: Cliquer sur '"..GetString(SI_OPTIONS_DEFAULTS).."' en bas ne réinitialise PAS les marqueurs de quêtes cachés manuellement.", 1)
 
 
 -- Translation by svan and Provision, thank you!

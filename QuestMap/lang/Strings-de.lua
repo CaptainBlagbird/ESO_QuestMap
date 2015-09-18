@@ -47,4 +47,4 @@ SafeAddString( QUESTMAP_MENU_RESET_HIDDEN,     "Ausgebl. zurücksetzen", 1)
 SafeAddString( QUESTMAP_MENU_RESET_HIDDEN_TT,  "Manuell ausgeblendete Markierungen zurücksetzen", 1)
 SafeAddString( QUESTMAP_MENU_RESET_HIDDEN_W,   "Kann nicht rückgängig gemacht werden!", 1)
 
-SafeAddString( QUESTMAP_MENU_RESET_NOTE,       "Hinweis: 'Standardwerte' setzt die manuell ausgeblendeten Questmarkierungen NICHT zurück.", 1)
+SafeAddString( QUESTMAP_MENU_RESET_NOTE,       "Hinweis: Unten auf '"..GetString(SI_OPTIONS_DEFAULTS).."' klicken setzt die manuell ausgeblendeten Questmarkierungen NICHT zurück.", 1)

@@ -48,7 +48,7 @@ local strings = {
 	QUESTMAP_MENU_RESET_HIDDEN_TT = "Reset manually hidden pins",
 	QUESTMAP_MENU_RESET_HIDDEN_W  = "Cannot be undone!",
 	
-	QUESTMAP_MENU_RESET_NOTE      = "Note: 'Reset to Defaults' does NOT reset manually hidden quest pins.",
+	QUESTMAP_MENU_RESET_NOTE      = "Note: Clicking on '"..GetString(SI_OPTIONS_DEFAULTS).."' below does NOT reset manually hidden quest pins.",
 }
 
 for key, value in pairs(strings) do
