@@ -21,6 +21,7 @@ local PIN_TYPE_QUEST_CADWELL     = QuestMap.pinType.cadwell
 local PIN_TYPE_QUEST_SKILL       = QuestMap.pinType.skill
 -- Local variables
 local completedQuests = {}
+local startedQuests = {}
 
 
 -- Library hack to be able to detect when a map pin filter gets unchecked (overwrite RemovePins function)
@@ -102,7 +103,7 @@ local function UpdateQuestData()
 		-- Add the quest to the list
 		completedQuests[id] = true
 		-- Clean up list of started quests
-		if QuestMap.settings.startedQuests[id] ~= nil then QuestMap.settings.startedQuests[id] = nil end
+		if startedQuests[id] ~= nil then startedQuests[id] = nil end
 		-- Clean up list of hidden quests
 		if QuestMap.settings.hiddenQuests[id] ~= nil then QuestMap.settings.hiddenQuests[id] = nil end
 	end
@@ -189,7 +190,7 @@ local function MapCallbackQuestPins(pinType)
 					end
 				end
 			else  -- Uncompleted
-				if QuestMap.settings.startedQuests[quest.id] ~= nil then  -- Started
+				if startedQuests[quest.id] ~= nil then  -- Started
 					if pinType == PIN_TYPE_QUEST_STARTED then
 						if not LMP:IsEnabled(PIN_TYPE_QUEST_CADWELL) and not LMP:IsEnabled(PIN_TYPE_QUEST_SKILL)
 						or LMP:IsEnabled(PIN_TYPE_QUEST_CADWELL) and isCadwellQuest
@@ -290,18 +291,18 @@ end
 local function OnPlayerActivated(event)
 	-- Set up SavedVariables table
 	QuestMap.settings = ZO_SavedVars:New("QuestMapSettings", 1, nil, QuestMap.savedVarsDefault)
-	-- if QuestMap.settings.startedQuests == nil then
-		QuestMap.settings.startedQuests = {}
-		local i
-		for i = 1, GetNumJournalQuests(), 1 do
-			local name = GetJournalQuestName(i)
-			local id = QuestMap:GetQuestId(name)
-			if id ~= nil then
-				-- Add to list and exit loop
-				QuestMap.settings.startedQuests[id] = name
-			end
+	
+	-- Get names of started quests from quest journal, get quest ID from lookup table
+	startedQuests = {}
+	local i
+	for i = 1, GetNumJournalQuests(), 1 do
+		local name = GetJournalQuestName(i)
+		local id = QuestMap:GetQuestId(name)
+		if id ~= nil then
+			-- Add to list and exit loop
+			startedQuests[id] = name
 		end
-	-- end
+	end
 	
 	-- Get tootip of each individual pin
 	local pinTooltipCreator = {
@@ -381,28 +382,25 @@ end
 
 -- Event handler function for EVENT_QUEST_ADDED
 local function OnQuestAdded(event, index, name, objective)
-	if type(QuestMap.settings.startedQuests) ~= "table" then QuestMap.settings.startedQuests = {} end
-	
 	-- Get id from name and only continue if found
 	local id = QuestMap:GetQuestId(name)
 	if id == nil then return end
 	
 	-- Add to list of started quests and refresh map pins
-	QuestMap.settings.startedQuests[id] = name
+	startedQuests[id] = name
 	QuestMap:RefreshPins()
 end
 
 -- Event handler function for EVENT_QUEST_REMOVED
 local function OnQuestRemoved(event, isComplete, index, name, zone, poi)
 	if isComplete then return end
-	if type(QuestMap.settings.startedQuests) ~= "table" then return end
 	
 	-- Get id from name and only continue if found
 	local id = QuestMap:GetQuestId(name)
 	if id == nil then return end
 	
 	-- Remove from list of started quests
-	QuestMap.settings.startedQuests[id] = nil
+	startedQuests[id] = nil
 	QuestMap:RefreshPins()
 end
 
