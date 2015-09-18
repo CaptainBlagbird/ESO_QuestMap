@@ -19,6 +19,8 @@ local PIN_TYPE_QUEST_HIDDEN      = QuestMap.pinType.hidden
 local PIN_TYPE_QUEST_STARTED     = QuestMap.pinType.started
 local PIN_TYPE_QUEST_CADWELL     = QuestMap.pinType.cadwell
 local PIN_TYPE_QUEST_SKILL       = QuestMap.pinType.skill
+-- Local variables
+local completedQuests = {}
 
 
 -- Library hack to be able to detect when a map pin filter gets unchecked (overwrite RemovePins function)
@@ -87,18 +89,23 @@ local function p(s)
 	d(s)
 end
 
--- Function to get an id list of all the completed quests
-local function GetCompletedQuests()
-	local completed = {}
+-- Function to update the list of completed quests and also clean up the lists of started/hidden quests
+local function UpdateQuestData()
+	completedQuests = {}
 	local id
-	-- Get all completed quests
-	while true do
+	-- There currently are < 6000 quests, but some can be completed multiple times.
+	-- 10000 should be more than enough to get all completed quests and still avoid an endless loop.
+	for i=0, 10000 do
 		-- Get next completed quest. If it was the last, break loop
 		id = GetNextCompletedQuestId(id)
 		if id == nil then break end
-		completed[id] = true
+		-- Add the quest to the list
+		completedQuests[id] = true
+		-- Clean up list of started quests
+		if QuestMap.settings.startedQuests[id] ~= nil then QuestMap.settings.startedQuests[id] = nil end
+		-- Clean up list of hidden quests
+		if QuestMap.settings.hiddenQuests[id] ~= nil then QuestMap.settings.hiddenQuests[id] = nil end
 	end
-	return completed
 end
 
 -- Function to refresh pins
@@ -119,8 +126,6 @@ local function MapCallbackQuestPins(pinType)
 	end
 	if GetMapType() > MAPTYPE_ZONE then return end
 	
-	-- Get completed quests
-	local completed = GetCompletedQuests()
 	-- Get currently displayed zone and subzone from texture
 	local zone = LMP:GetZoneAndSubzone(LMP_FORMAT_ZONE_SINGLE_STRING)
 	-- Get quest list for that zone from database
@@ -174,7 +179,7 @@ local function MapCallbackQuestPins(pinType)
 				pinInfo[2] = pinInfo[2].."]"
 			end
 			-- Create pins for corresponding category
-			if completed[quest.id] then
+			if completedQuests[quest.id] then
 				if pinType == PIN_TYPE_QUEST_COMPLETED then
 					if not LMP:IsEnabled(PIN_TYPE_QUEST_CADWELL) and not LMP:IsEnabled(PIN_TYPE_QUEST_SKILL)
 					or LMP:IsEnabled(PIN_TYPE_QUEST_CADWELL) and isCadwellQuest
@@ -259,8 +264,6 @@ local function SetQuestsInZoneHidden(str)
 	
 	-- Get quest list for that zone from database
 	local questlist = QuestMap:GetQuestList(map)
-	-- Get completed quests
-	local completed = GetCompletedQuests()
 	
 	if str == "unhide" then
 		for _, quest in ipairs(questlist) do
@@ -271,7 +274,7 @@ local function SetQuestsInZoneHidden(str)
 	elseif str == "hide" then
 		for _, quest in ipairs(questlist) do
 			-- Hiding only necessary for uncompleted quests
-			if not completed[quest.id] then
+			if not completedQuests[quest.id] then
 				-- Add to list that holds hidden quests
 				QuestMap.settings.hiddenQuests[quest.id] = QuestMap:GetQuestName(quest.id)
 			end
@@ -361,45 +364,18 @@ local function OnPlayerActivated(event)
 			LMP:RefreshPins(PIN_TYPE_QUEST_HIDDEN)
 		end}})
 	
+	-- Get list of completed quests for the first time
+	UpdateQuestData()
+	
 	-- Register slash command and link function
 	SLASH_COMMANDS["/qm"] = function(str) SetQuestsInZoneHidden(str); QuestMap:RefreshPins() end
 	
 	EVENT_MANAGER:UnregisterForEvent(QuestMap.name, EVENT_PLAYER_ACTIVATED)
 end
 
-
-function RemoveQuestsCompletedFromStarted()
-	if type(QuestMap.settings.startedQuests) ~= "table" then return end
-	local id
-	-- Get all completed quests
-	while true do
-		-- Get next completed quest. If it was the last, break loop
-		id = GetNextCompletedQuestId(id)
-		if id == nil then break end
-		-- If current quest was in the list of manually hidden quests, remove it from there
-		if QuestMap.settings.startedQuests[id] ~= nil then QuestMap.settings.startedQuests[id] = nil end
-	end
-end
-
--- Function to remove completed quests from lists
-local function RemoveQuestsCompletedFromHidden()
-	local id
-	-- Get all completed quests
-	while true do
-		-- Get next completed quest. If it was the last, break loop
-		id = GetNextCompletedQuestId(id)
-		if id == nil then break end
-		-- If current quest was in the list of manually hidden quests, remove it from there
-		if QuestMap.settings.hiddenQuests[id] ~= nil then QuestMap.settings.hiddenQuests[id] = nil end
-	end
-end
-
 -- Event handler function for EVENT_QUEST_COMPLETE
 local function OnQuestComplete(event, name, lvl, pXP, cXP, rnk, pPoints, cPoints)
-	-- Clean up list of started quests
-	RemoveQuestsCompletedFromStarted()
-	-- Clean up list of hidden quests and refresh map pins
-	RemoveQuestsCompletedFromHidden()
+	UpdateQuestData()
 	QuestMap:RefreshPins()
 end
 
