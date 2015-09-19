@@ -300,7 +300,7 @@ local function OnPlayerActivated(event)
 		local id = QuestMap:GetQuestId(name)
 		if id ~= nil then
 			-- Add to list and exit loop
-			startedQuests[id] = name
+			startedQuests[id] = true
 		end
 	end
 	
@@ -387,7 +387,7 @@ local function OnQuestAdded(event, index, name, objective)
 	if id == nil then return end
 	
 	-- Add to list of started quests and refresh map pins
-	startedQuests[id] = name
+	startedQuests[id] = true
 	QuestMap:RefreshPins()
 end
 
