@@ -292,18 +292,6 @@ local function OnPlayerActivated(event)
 	-- Set up SavedVariables table
 	QuestMap.settings = ZO_SavedVars:New("QuestMapSettings", 1, nil, QuestMap.savedVarsDefault)
 	
-	-- Get names of started quests from quest journal, get quest ID from lookup table
-	startedQuests = {}
-	local i
-	for i = 1, GetNumJournalQuests(), 1 do
-		local name = GetJournalQuestName(i)
-		local id = QuestMap:GetQuestId(name)
-		if id ~= nil then
-			-- Add to list and exit loop
-			startedQuests[id] = true
-		end
-	end
-	
 	-- Get tootip of each individual pin
 	local pinTooltipCreator = {
 		creator = function(pin)
@@ -365,19 +353,23 @@ local function OnPlayerActivated(event)
 			LMP:RefreshPins(PIN_TYPE_QUEST_HIDDEN)
 		end}})
 	
-	-- Get list of completed quests for the first time
+	-- Get names of started quests from quest journal, get quest ID from lookup table
+	startedQuests = {}
+	for i = 1, GetNumJournalQuests(), 1 do
+		local name = GetJournalQuestName(i)
+		local id = QuestMap:GetQuestId(name)
+		if id ~= nil then
+			-- Add to list and exit loop
+			startedQuests[id] = true
+		end
+	end
+	-- Set up list of completed quests
 	UpdateQuestData()
 	
 	-- Register slash command and link function
 	SLASH_COMMANDS["/qm"] = function(str) SetQuestsInZoneHidden(str); QuestMap:RefreshPins() end
 	
 	EVENT_MANAGER:UnregisterForEvent(QuestMap.name, EVENT_PLAYER_ACTIVATED)
-end
-
--- Event handler function for EVENT_QUEST_COMPLETE
-local function OnQuestComplete(event, name, lvl, pXP, cXP, rnk, pPoints, cPoints)
-	UpdateQuestData()
-	QuestMap:RefreshPins()
 end
 
 -- Event handler function for EVENT_QUEST_ADDED
@@ -393,20 +385,20 @@ end
 
 -- Event handler function for EVENT_QUEST_REMOVED
 local function OnQuestRemoved(event, isComplete, index, name, zone, poi)
-	if isComplete then return end
-	
-	-- Get id from name and only continue if found
-	local id = QuestMap:GetQuestId(name)
-	if id == nil then return end
-	
-	-- Remove from list of started quests
-	startedQuests[id] = nil
+	if isComplete then
+		UpdateQuestData()
+	else -- Abandoned
+		-- Get id from name and only continue if found
+		local id = QuestMap:GetQuestId(name)
+		if id == nil then return end
+		-- Remove from list of started quests
+		startedQuests[id] = nil
+	end
 	QuestMap:RefreshPins()
 end
 
 
 -- Registering the event handler functions for the events
 EVENT_MANAGER:RegisterForEvent(QuestMap.name, EVENT_PLAYER_ACTIVATED, OnPlayerActivated)
-EVENT_MANAGER:RegisterForEvent(QuestMap.name, EVENT_QUEST_COMPLETE,   OnQuestComplete)
 EVENT_MANAGER:RegisterForEvent(QuestMap.name, EVENT_QUEST_ADDED,      OnQuestAdded)
 EVENT_MANAGER:RegisterForEvent(QuestMap.name, EVENT_QUEST_REMOVED,    OnQuestRemoved)
