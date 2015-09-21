@@ -292,6 +292,16 @@ local function OnPlayerActivated(event)
 	-- Set up SavedVariables table
 	QuestMap.settings = ZO_SavedVars:New("QuestMapSettings", 1, nil, QuestMap.savedVarsDefault)
 	
+	-- Get saved variables table for current user/char directly (without metatable), so it is possible to use pairs()
+	local sv = QuestMapSettings.Default[GetDisplayName()][GetUnitName("player")]
+	-- Clean up saved variables (from previous versions)
+	for key, val in pairs(sv) do
+		-- Delete key-value pair if the key can't also be found in the default settings (except for version)
+		if key ~= "version" and QuestMap.savedVarsDefault[key] == nil then
+			sv[key] = nil
+		end
+	end
+	
 	-- Get tootip of each individual pin
 	local pinTooltipCreator = {
 		creator = function(pin)
