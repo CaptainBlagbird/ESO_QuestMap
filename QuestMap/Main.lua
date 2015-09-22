@@ -111,10 +111,12 @@ local function UpdateQuestData()
 	startedQuests = {}
 	for i = 1, GetNumJournalQuests(), 1 do
 		local name = GetJournalQuestName(i)
-		local id = QuestMap:GetQuestId(name)
-		if id ~= nil then
-			-- Add to list and exit loop
-			startedQuests[id] = true
+		local ids = QuestMap:GetQuestIds(name)
+		if ids ~= nil then
+			-- Add all IDs for that quest name to list
+			for _, id in ipairs(ids) do
+				startedQuests[id] = true
+			end
 		end
 	end
 end
@@ -390,19 +392,8 @@ local function OnPlayerActivated(event)
 	EVENT_MANAGER:UnregisterForEvent(QuestMap.name, EVENT_PLAYER_ACTIVATED)
 end
 
--- Event handler function for EVENT_QUEST_ADDED
-local function OnQuestAdded(event, index, name, objective)
-	-- Get id from name and only continue if found
-	local id = QuestMap:GetQuestId(name)
-	if id == nil then return end
-	
-	-- Add to list of started quests and refresh map pins
-	startedQuests[id] = true
-	QuestMap:RefreshPins()
-end
-
--- Event handler function for EVENT_QUEST_REMOVED
-local function OnQuestRemoved(event, isComplete, index, name, zone, poi)
+-- Event handler function for EVENT_QUEST_REMOVED and EVENT_QUEST_ADDED
+local function OnQuestRemovedOrAdded(event)
 	UpdateQuestData()
 	QuestMap:RefreshPins()
 end
@@ -410,5 +401,5 @@ end
 
 -- Registering the event handler functions for the events
 EVENT_MANAGER:RegisterForEvent(QuestMap.name, EVENT_PLAYER_ACTIVATED, OnPlayerActivated)
-EVENT_MANAGER:RegisterForEvent(QuestMap.name, EVENT_QUEST_ADDED,      OnQuestAdded)
-EVENT_MANAGER:RegisterForEvent(QuestMap.name, EVENT_QUEST_REMOVED,    OnQuestRemoved)
+EVENT_MANAGER:RegisterForEvent(QuestMap.name, EVENT_QUEST_ADDED,      OnQuestRemovedOrAdded)
+EVENT_MANAGER:RegisterForEvent(QuestMap.name, EVENT_QUEST_REMOVED,    OnQuestRemovedOrAdded)
