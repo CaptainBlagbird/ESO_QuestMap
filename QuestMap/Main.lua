@@ -186,7 +186,9 @@ local function MapCallbackQuestPins(pinType)
 					or LMP:IsEnabled(PIN_TYPE_QUEST_CADWELL) and isCadwellQuest
 					or LMP:IsEnabled(PIN_TYPE_QUEST_SKILL) and isSkillQuest then
 						pinInfo[1] = pinInfo[1].." |c888888(X)"
-						LMP:CreatePin(PIN_TYPE_QUEST_COMPLETED, pinInfo, quest.x, quest.y)
+						if LMP:IsEnabled(PIN_TYPE_QUEST_COMPLETED) then
+							LMP:CreatePin(PIN_TYPE_QUEST_COMPLETED, pinInfo, quest.x, quest.y)
+						end
 					end
 				end
 			else  -- Uncompleted
@@ -196,7 +198,9 @@ local function MapCallbackQuestPins(pinType)
 						or LMP:IsEnabled(PIN_TYPE_QUEST_CADWELL) and isCadwellQuest
 						or LMP:IsEnabled(PIN_TYPE_QUEST_SKILL) and isSkillQuest then
 							pinInfo[1] = pinInfo[1].." |c888888(  )"
-							LMP:CreatePin(PIN_TYPE_QUEST_STARTED, pinInfo, quest.x, quest.y)
+							if LMP:IsEnabled(PIN_TYPE_QUEST_STARTED) then
+								LMP:CreatePin(PIN_TYPE_QUEST_STARTED, pinInfo, quest.x, quest.y)
+							end
 						end
 					end
 				elseif QuestMap.settings.hiddenQuests[quest.id] ~= nil then  -- Hidden
@@ -205,7 +209,9 @@ local function MapCallbackQuestPins(pinType)
 						or LMP:IsEnabled(PIN_TYPE_QUEST_CADWELL) and isCadwellQuest
 						or LMP:IsEnabled(PIN_TYPE_QUEST_SKILL) and isSkillQuest then
 							pinInfo[1] = pinInfo[1].." |c888888(+)"
-							LMP:CreatePin(PIN_TYPE_QUEST_HIDDEN, pinInfo, quest.x, quest.y)
+							if LMP:IsEnabled(PIN_TYPE_QUEST_HIDDEN) then
+								LMP:CreatePin(PIN_TYPE_QUEST_HIDDEN, pinInfo, quest.x, quest.y)
+							end
 						end
 					end
 				else
@@ -214,7 +220,9 @@ local function MapCallbackQuestPins(pinType)
 						or LMP:IsEnabled(PIN_TYPE_QUEST_CADWELL) and isCadwellQuest
 						or LMP:IsEnabled(PIN_TYPE_QUEST_SKILL) and isSkillQuest then
 							pinInfo[1] = pinInfo[1].." |c888888(  )"
-							LMP:CreatePin(PIN_TYPE_QUEST_UNCOMPLETED, pinInfo, quest.x, quest.y)
+							if LMP:IsEnabled(PIN_TYPE_QUEST_UNCOMPLETED) then
+								LMP:CreatePin(PIN_TYPE_QUEST_UNCOMPLETED, pinInfo, quest.x, quest.y)
+							end
 						end
 					end
 				end
