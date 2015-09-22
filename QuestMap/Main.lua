@@ -90,8 +90,9 @@ local function p(s)
 	d(s)
 end
 
--- Function to update the list of completed quests and also clean up the lists of started/hidden quests
+-- Function to update the list of completed/started quests and also clean up the lists of hidden quests
 local function UpdateQuestData()
+	-- Set up list of completed quests
 	completedQuests = {}
 	local id
 	-- There currently are < 6000 quests, but some can be completed multiple times.
@@ -102,10 +103,19 @@ local function UpdateQuestData()
 		if id == nil then break end
 		-- Add the quest to the list
 		completedQuests[id] = true
-		-- Clean up list of started quests
-		if startedQuests[id] ~= nil then startedQuests[id] = nil end
 		-- Clean up list of hidden quests
 		if QuestMap.settings.hiddenQuests[id] ~= nil then QuestMap.settings.hiddenQuests[id] = nil end
+	end
+	
+	-- Get names of started quests from quest journal, get quest ID from lookup table
+	startedQuests = {}
+	for i = 1, GetNumJournalQuests(), 1 do
+		local name = GetJournalQuestName(i)
+		local id = QuestMap:GetQuestId(name)
+		if id ~= nil then
+			-- Add to list and exit loop
+			startedQuests[id] = true
+		end
 	end
 end
 
@@ -371,17 +381,7 @@ local function OnPlayerActivated(event)
 			LMP:RefreshPins(PIN_TYPE_QUEST_HIDDEN)
 		end}})
 	
-	-- Get names of started quests from quest journal, get quest ID from lookup table
-	startedQuests = {}
-	for i = 1, GetNumJournalQuests(), 1 do
-		local name = GetJournalQuestName(i)
-		local id = QuestMap:GetQuestId(name)
-		if id ~= nil then
-			-- Add to list and exit loop
-			startedQuests[id] = true
-		end
-	end
-	-- Set up list of completed quests
+	-- Set up lists of completed and started quests
 	UpdateQuestData()
 	
 	-- Register slash command and link function
@@ -403,15 +403,7 @@ end
 
 -- Event handler function for EVENT_QUEST_REMOVED
 local function OnQuestRemoved(event, isComplete, index, name, zone, poi)
-	if isComplete then
-		UpdateQuestData()
-	else -- Abandoned
-		-- Get id from name and only continue if found
-		local id = QuestMap:GetQuestId(name)
-		if id == nil then return end
-		-- Remove from list of started quests
-		startedQuests[id] = nil
-	end
+	UpdateQuestData()
 	QuestMap:RefreshPins()
 end
 
