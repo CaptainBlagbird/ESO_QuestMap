@@ -6,6 +6,7 @@
 ## SavedVariables: QuestMapSettings
 ## OptionalDependsOn: LibMapPins-1.0 LibAddonMenu-2.0
 
+; Libraries
 libs/LibStub/LibStub.lua
 libs/LibAddonMenu-2.0/LibAddonMenu-2.0.lua
 libs/LibAddonMenu-2.0/controls/panel.lua

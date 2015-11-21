@@ -8,8 +8,8 @@ https://github.com/CaptainBlagbird
 
 local panelData = {
 	type = "panel",
-	name = QuestMap.name,
-	displayName = "|c70C0DE"..QuestMap.name.."|r",
+	name = QuestMap.displayName,
+	displayName = "|c70C0DE"..QuestMap.displayName.."|r",
 	author = "|c70C0DECaptainBlagbird|r",
 	version = "1.7",
 	slashCommand = "/questmap",	--(optional) will register a keybind to open to this panel
@@ -112,11 +112,11 @@ local optionsTable = {
 
 -- Wait until all addons are loaded
 local function OnPlayerActivated(event)
-	EVENT_MANAGER:UnregisterForEvent(QuestMap.name.."Settings", EVENT_PLAYER_ACTIVATED)
 	if LibStub ~= nil then
 		local LAM = LibStub("LibAddonMenu-2.0")
-		LAM:RegisterAddonPanel(QuestMap.name, panelData)
-		LAM:RegisterOptionControls(QuestMap.name, optionsTable)
+		LAM:RegisterAddonPanel(QuestMap.idName.."_Options", panelData)
+		LAM:RegisterOptionControls(QuestMap.idName.."_Options", optionsTable)
 	end
+	EVENT_MANAGER:UnregisterForEvent(QuestMap.idName.."_Options", EVENT_PLAYER_ACTIVATED)
 end
-EVENT_MANAGER:RegisterForEvent(QuestMap.name.."Settings", EVENT_PLAYER_ACTIVATED, OnPlayerActivated)
+EVENT_MANAGER:RegisterForEvent(QuestMap.idName.."_Options", EVENT_PLAYER_ACTIVATED, OnPlayerActivated)

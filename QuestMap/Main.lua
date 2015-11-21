@@ -81,7 +81,7 @@ end
 -- Function to print text to the chat window including the addon name
 local function p(s)
 	-- Add addon name to message
-	s = "|c70C0DE["..QuestMap.name.."]|r "..s
+	s = "|c70C0DE["..QuestMap.displayName.."]|r "..s
 	-- Replace regular color (yellow) with ESO golden in this string
 	s = s:gsub("|r", "|cC5C29E")
 	-- Replace newline character with newline + ESO golden (because newline resets color to default yellow)
@@ -389,17 +389,14 @@ local function OnPlayerActivated(event)
 	-- Register slash command and link function
 	SLASH_COMMANDS["/qm"] = function(str) SetQuestsInZoneHidden(str); QuestMap:RefreshPins() end
 	
-	EVENT_MANAGER:UnregisterForEvent(QuestMap.name, EVENT_PLAYER_ACTIVATED)
+	EVENT_MANAGER:UnregisterForEvent(QuestMap.idName, EVENT_PLAYER_ACTIVATED)
 end
+EVENT_MANAGER:RegisterForEvent(QuestMap.idName, EVENT_PLAYER_ACTIVATED, OnPlayerActivated)
 
 -- Event handler function for EVENT_QUEST_REMOVED and EVENT_QUEST_ADDED
 local function OnQuestRemovedOrAdded(event)
 	UpdateQuestData()
 	QuestMap:RefreshPins()
 end
-
-
--- Registering the event handler functions for the events
-EVENT_MANAGER:RegisterForEvent(QuestMap.name, EVENT_PLAYER_ACTIVATED, OnPlayerActivated)
-EVENT_MANAGER:RegisterForEvent(QuestMap.name, EVENT_QUEST_ADDED,      OnQuestRemovedOrAdded)
-EVENT_MANAGER:RegisterForEvent(QuestMap.name, EVENT_QUEST_REMOVED,    OnQuestRemovedOrAdded)
+EVENT_MANAGER:RegisterForEvent(QuestMap.idName, EVENT_QUEST_ADDED,      OnQuestRemovedOrAdded)
+EVENT_MANAGER:RegisterForEvent(QuestMap.idName, EVENT_QUEST_REMOVED,    OnQuestRemovedOrAdded)

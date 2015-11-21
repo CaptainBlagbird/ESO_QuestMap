@@ -8,7 +8,8 @@ https://github.com/CaptainBlagbird
 
 -- Addon info
 QuestMap = {}
-QuestMap.name = "Quest Map"
+QuestMap.displayName = "Quest Map"
+QuestMap.idName = "QuestMap"
 
 -- Constatnts
 local PIN_TYPE_QUEST_UNCOMPLETED = "Quest_uncompleted"
