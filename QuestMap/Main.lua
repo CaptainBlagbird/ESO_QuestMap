@@ -22,6 +22,9 @@ local PIN_TYPE_QUEST_SKILL       = QuestMap.pinType.skill
 -- Local variables
 local completedQuests = {}
 local startedQuests = {}
+local lastZone = ""
+local zoneQuests = {}
+local subzoneQuests = {}
 
 
 -- Library hack to be able to detect when a map pin filter gets unchecked (overwrite RemovePins function)
@@ -121,6 +124,32 @@ local function UpdateQuestData()
 	end
 end
 
+-- Function to update the list of zone/subzone quests
+local function UpdateZoneQuestData(zone)
+	-- Get quest list for that zone from database
+	zoneQuests = QuestMap:GetQuestList(zone)
+	
+	-- Get quest list for all subzones and convert each position it for the zone
+	subzoneQuests = {}
+	local subzones = QuestMap:GetSubzoneList(zone)
+	for subzone, conversion in pairs(subzones) do
+		-- Get each quest of the subzone
+		local quests = QuestMap:GetQuestList(subzone)
+		for i, quest in ipairs(quests) do
+			-- Copy values to new element and insert it in the main table
+			if not isEmpty(quest) then
+				local new_element = {}
+				new_element.id = quest.id
+				-- Convert to correct position (subzone --> zone)
+				new_element.x = (quest.x * conversion.zoom_factor) + conversion.x
+				new_element.y = (quest.y * conversion.zoom_factor) + conversion.y
+				-- Add element to main table
+				table.insert(subzoneQuests, new_element)
+			end
+		end
+	end
+end
+
 -- Function to refresh pins
 function QuestMap:RefreshPins()
 	LMP:RefreshPins(PIN_TYPE_QUEST_COMPLETED)
@@ -141,48 +170,42 @@ local function MapCallbackQuestPins(pinType)
 	
 	-- Get currently displayed zone and subzone from texture
 	local zone = LMP:GetZoneAndSubzone(LMP_FORMAT_ZONE_SINGLE_STRING)
-	-- Get quest list for that zone from database
-	local questlist = QuestMap:GetQuestList(zone)
 	
-	-- Also get quests from subzones
-	local subzone_questlist = {}
-	local subzone_questlist_offset = 0
-	local subzonelist = QuestMap:GetSubzoneList(zone)
-	for subzone_name, subzone in pairs(subzonelist) do
-		subzone_questlist_offset = #subzone_questlist
-		-- Get each quest of the subzone
-		local ql = QuestMap:GetQuestList(subzone_name)
-		for i, q in ipairs(ql) do
-			-- Add offset so we don't overwrite the quests of the previous subzone in the big table
-			i = i + subzone_questlist_offset
-			-- Prepare entry in big table
-			subzone_questlist[i] = {}
-			-- Copy values to big table
-			if not isEmpty(q) then
-				subzone_questlist[i].id = q.id
-				-- Convert to correct position (subzone --> zone)
-				subzone_questlist[i].x = (q.x * subzone.zoom_factor) + subzone.x
-				subzone_questlist[i].y = (q.y * subzone.zoom_factor) + subzone.y
-			end
-		end
+	-- Update quest list for current zone if the zone changed
+	if zone ~= lastZone then
+		UpdateZoneQuestData(zone)
+		lastZone = zone
 	end
 	
-	-- For each quest, create a map pin with the quest name
-	for i=1,#questlist+#subzone_questlist do
+	-- Loop over both quest list tables: For each quest, create a map pin with the quest name
+	for i=1,#zoneQuests+#subzoneQuests do
 		local quest
-		if i <= #questlist then
-			quest = questlist[i]
+		local isFromSubzone
+		-- Handle correct index
+		if i <= #zoneQuests then
+			isFromSubzone = false
+			quest = zoneQuests[i]
 		else
-			quest = subzone_questlist[i-#questlist]
+			isFromSubzone = true
+			quest = subzoneQuests[i-#zoneQuests]
 		end
+		
 		-- Get quest name and only continue if string isn't empty
 		local name = QuestMap:GetQuestName(quest.id)
 		if name ~= "" then
 			-- Get quest type info
 			local isSkillQuest, isCadwellQuest = QuestMap:GetQuestType(quest.id)
-			-- Create table with name and id (only name will be visible in tooltip because key for id is "id" and not index
-			local pinInfo = {"|cFFFFFF"..name}
+			
+			-- Create table with tooltip info
+			local pinInfo = {}
+			if isFromSubzone then
+				pinInfo[1] = "|cDDDDDD"..name
+			else
+				pinInfo[1] = "|cFFFFFF"..name
+			end
+			-- Also store quest id (wont be visible in the tooltib because key is not an index number)
 			pinInfo.id = quest.id
+			
 			-- Add quest type info to tooltip data
 			if isSkillQuest or isCadwellQuest then
 				pinInfo[2] = "["
@@ -191,6 +214,7 @@ local function MapCallbackQuestPins(pinType)
 				if isCadwellQuest then pinInfo[2] = pinInfo[2]..GetString(QUESTMAP_CADWELL) end
 				pinInfo[2] = pinInfo[2].."]"
 			end
+			
 			-- Create pins for corresponding category
 			if completedQuests[quest.id] then
 				if pinType == PIN_TYPE_QUEST_COMPLETED then
