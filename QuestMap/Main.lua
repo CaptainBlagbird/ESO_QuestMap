@@ -8,6 +8,7 @@ https://github.com/CaptainBlagbird
 
 -- Libraries
 local LMP = LibStub("LibMapPins-1.0")
+local LMW = LibStub("LibMsgWin-1.0")
 
 -- Constants
 local LMP_FORMAT_ZONE_TWO_STRINGS = false
@@ -25,6 +26,15 @@ local startedQuests = {}
 local lastZone = ""
 local zoneQuests = {}
 local subzoneQuests = {}
+
+-- UI
+local ListUI = LMW:CreateMsgWindow(QuestMap.idName.."_ListUI", " ")
+ListUI:SetAnchor(TOPLEFT, nil, nil, 50, 200)
+ListUI:SetDimensions(400, 600)
+ListUI:SetHidden(true)
+local btn = WINDOW_MANAGER:CreateControlFromVirtual(ListUI:GetName().."Close", ListUI, "ZO_CloseButton")
+btn:SetAnchor(TOPRIGHT, nil, nil, -7, 7)
+btn:SetHandler("OnClicked", function(self) self:GetParent():SetHidden(true) end)
 
 
 -- Library hack to be able to detect when a map pin filter gets unchecked (overwrite RemovePins function)
@@ -148,6 +158,111 @@ local function UpdateZoneQuestData(zone)
 			end
 		end
 	end
+	
+	lastZone = zone
+end
+
+-- Function for displaying window with the quest list
+local function DisplayListUI(arg)
+	-- Default option
+	if arg == "" or arg == nil then arg = QuestMap.settings.lastListArg end
+	
+	-- Get currently displayed zone and subzone from texture
+	local zone = LMP:GetZoneAndSubzone(LMP_FORMAT_ZONE_SINGLE_STRING)
+	-- Update quest list for current zone if the zone changed
+	if zone ~= lastZone then
+		UpdateZoneQuestData(zone)
+	end
+	
+	-- Init variables and custom function that will be changed depending on input argument
+	local title = GetString(QUESTMAP_QUESTS)..": "
+	local list = {}
+	local addQuestToList = function() end
+	
+	-- Define variables and function depending on input argument
+	if arg == "completed" then
+		title = title..GetString(QUESTMAP_COMPLETED)
+		-- Check the completedQuests list and only add matching quests
+		addQuestToList = function(quest)
+			local name = QuestMap:GetQuestName(quest.id)
+			if name ~= "" and completedQuests[quest.id] then
+				list[quest.id] = name
+			end
+		end
+		
+	elseif arg == "uncompleted" then
+		title = title..GetString(QUESTMAP_UNCOMPLETED)
+		-- Check the completedQuests list and only add not matching quests
+		addQuestToList = function(quest)
+			local name = QuestMap:GetQuestName(quest.id)
+			if name ~= "" and not completedQuests[quest.id] then
+				list[quest.id] = name
+			end
+		end
+		
+	elseif arg == "hidden" then
+		title = title..GetString(QUESTMAP_HIDDEN)
+		-- Check the hiddenQuests list in the saved variables and only add matching quests
+		addQuestToList = function(quest)
+			local name = QuestMap:GetQuestName(quest.id)
+			if name ~= "" and QuestMap.settings.hiddenQuests[quest.id] then
+				list[quest.id] = name
+			end
+		end
+		
+	elseif arg == "started" then
+		title = title..GetString(QUESTMAP_STARTED)
+		-- Check the startedQuests list in the saved variables and only add matching quests
+		addQuestToList = function(quest)
+			local name = QuestMap:GetQuestName(quest.id)
+			if name ~= "" and startedQuests[quest.id] then
+				list[quest.id] = name
+			end
+		end
+		
+	elseif arg == "cadwell" then
+		title = title..GetString(QUESTMAP_CADWELL)
+		-- Check if quest is a cadwell's almanac quest and only add it if true
+		addQuestToList = function(quest)
+			local name = QuestMap:GetQuestName(quest.id)
+			local isSkillQuest, isCadwellQuest = QuestMap:GetQuestType(quest.id)
+			if name ~= "" and isCadwellQuest then
+				list[quest.id] = name
+			end
+		end
+		
+	elseif arg == "skill" then
+		title = title..GetString(QUESTMAP_SKILL)
+		-- Check if quest is a skill quest and only add it if true
+		addQuestToList = function(quest)
+			local name = QuestMap:GetQuestName(quest.id)
+			local isSkillQuest, isCadwellQuest = QuestMap:GetQuestType(quest.id)
+			if name ~= "" and isSkillQuest then
+				list[quest.id] = name
+			end
+		end
+		
+	else
+		-- Do nothing when argument invalid
+		return
+	end
+	
+	-- Save argument so the next time the slash command can be used without argument
+	QuestMap.settings.lastListArg = arg
+	
+	-- Add quests of zone and subzone to list with the custom function
+	for _, quest in ipairs(zoneQuests) do addQuestToList(quest) end
+	for _, quest in ipairs(subzoneQuests) do addQuestToList(quest) end
+	
+	-- Change title and add quest titles from list to window
+	title = title.." ("..ZO_WorldMap_GetMapTitle()..")"
+	WINDOW_MANAGER:GetControlByName(ListUI:GetName(), "Label"):SetText(title)
+	ListUI:ClearText()
+	for id, questName in pairs(list) do
+		ListUI:AddText(questName)
+	end
+	
+	ListUI:SetHidden(false)
 end
 
 -- Function to refresh pins
@@ -170,11 +285,13 @@ local function MapCallbackQuestPins(pinType)
 	
 	-- Get currently displayed zone and subzone from texture
 	local zone = LMP:GetZoneAndSubzone(LMP_FORMAT_ZONE_SINGLE_STRING)
-	
 	-- Update quest list for current zone if the zone changed
 	if zone ~= lastZone then
 		UpdateZoneQuestData(zone)
-		lastZone = zone
+		-- If the list window was open, update it by running the function again without argument
+		if not ListUI:IsHidden() then
+			DisplayListUI()
+		end
 	end
 	
 	-- Loop over both quest list tables: For each quest, create a map pin with the quest name
@@ -410,8 +527,9 @@ local function OnPlayerActivated(event)
 	-- Set up lists of completed and started quests
 	UpdateQuestData()
 	
-	-- Register slash command and link function
+	-- Register slash commands and link function
 	SLASH_COMMANDS["/qm"] = function(str) SetQuestsInZoneHidden(str); QuestMap:RefreshPins() end
+	SLASH_COMMANDS["/qmlist"] = DisplayListUI
 	
 	EVENT_MANAGER:UnregisterForEvent(QuestMap.idName, EVENT_PLAYER_ACTIVATED)
 end

@@ -45,4 +45,5 @@ QuestMap.savedVarsDefault = {
 		[PIN_TYPE_QUEST_SKILL]               = false,
 	},
 	["displayClickMsg"] = true,
+	["lastListArg"] = "uncompleted",
 }
