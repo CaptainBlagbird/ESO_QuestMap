@@ -103,6 +103,18 @@ local function p(s)
 	d(s)
 end
 
+-- Function to get the location/position of the player by slash command for reporting new quest givers / bugs
+local function GetPlayerPos()
+	-- Get location info and format coordinates
+	local zone = LMP:GetZoneAndSubzone(LMP_FORMAT_ZONE_SINGLE_STRING)
+	local x, y = GetMapPlayerPosition("player")
+	x = string.format("%05.2f", x*100)
+	y = string.format("%05.2f", y*100)
+	-- Add to chat input field so it's copyable
+	StartChatInput(zone.." @ "..x.."/"..y)
+	ZO_ChatWindowTextEntryEditBox:SelectAll();
+end
+
 -- Function to update the list of completed/started quests and also clean up the lists of hidden quests
 local function UpdateQuestData()
 	-- Set up list of completed quests
@@ -530,6 +542,7 @@ local function OnPlayerActivated(event)
 	-- Register slash commands and link function
 	SLASH_COMMANDS["/qm"] = function(str) SetQuestsInZoneHidden(str); QuestMap:RefreshPins() end
 	SLASH_COMMANDS["/qmlist"] = DisplayListUI
+	SLASH_COMMANDS["/qmgetpos"] = GetPlayerPos
 	
 	EVENT_MANAGER:UnregisterForEvent(QuestMap.idName, EVENT_PLAYER_ACTIVATED)
 end
