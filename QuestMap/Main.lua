@@ -134,13 +134,15 @@ local function UpdateQuestData()
 	
 	-- Get names of started quests from quest journal, get quest ID from lookup table
 	startedQuests = {}
-	for i = 1, GetNumJournalQuests(), 1 do
-		local name = GetJournalQuestName(i)
-		local ids = QuestMap:GetQuestIds(name)
-		if ids ~= nil then
-			-- Add all IDs for that quest name to list
-			for _, id in ipairs(ids) do
-				startedQuests[id] = true
+	for i=1, MAX_JOURNAL_QUESTS do
+		if IsValidQuestIndex(i) then
+			local name = GetJournalQuestName(i)
+			local ids = QuestMap:GetQuestIds(name)
+			if ids ~= nil then
+				-- Add all IDs for that quest name to list
+				for _, id in ipairs(ids) do
+					startedQuests[id] = true
+				end
 			end
 		end
 	end
@@ -461,7 +463,7 @@ local function SetQuestsInZoneHidden(str)
 end
 
 -- Event handler function for EVENT_PLAYER_ACTIVATED
-local function OnPlayerActivated(event)
+local function OnPlayerActivated(eventCode)
 	-- Set up SavedVariables table
 	QuestMap.settings = ZO_SavedVars:New("QuestMapSettings", 1, nil, QuestMap.savedVarsDefault)
 	
@@ -549,7 +551,7 @@ end
 EVENT_MANAGER:RegisterForEvent(QuestMap.idName, EVENT_PLAYER_ACTIVATED, OnPlayerActivated)
 
 -- Event handler function for EVENT_QUEST_REMOVED and EVENT_QUEST_ADDED
-local function OnQuestRemovedOrAdded(event)
+local function OnQuestRemovedOrAdded(eventCode)
 	UpdateQuestData()
 	QuestMap:RefreshPins()
 end
