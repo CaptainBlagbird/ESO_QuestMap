@@ -30,6 +30,8 @@ local strings = {
 	QUESTMAP_SLASH_MAPINFO        = "Please open the map first.",
 	
 	-- Settings menu
+	QUESTMAP_MENU_ICON_SET        = "Icon set",
+	
 	QUESTMAP_MENU_PIN_SIZE        = "Map pin size",
 	QUESTMAP_MENU_PIN_SIZE_TT     = "Defines the display size of the map pins (default: "..QuestMap.savedVarsDefault.pinSize..")",
 	

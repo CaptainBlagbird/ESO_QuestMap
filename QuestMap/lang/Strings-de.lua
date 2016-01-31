@@ -29,6 +29,8 @@ SafeAddString( QUESTMAP_SLASH_USAGE,           "Bitte verwende ein Argument nach
 SafeAddString( QUESTMAP_SLASH_MAPINFO,         "Bitte erst die Karte öffnen.", 1)
 
 -- Settings menu
+SafeAddString( QUESTMAP_MENU_ICON_SET,         "Icon-Set", 1)
+
 SafeAddString( QUESTMAP_MENU_PIN_SIZE,         "Grösse der Kartenmarkierung", 1)
 SafeAddString( QUESTMAP_MENU_PIN_SIZE_TT,      "Definiert die Anzeigegrösse der Kartenmarkierungen (Standard: "..QuestMap.savedVarsDefault.pinSize..")", 1)
 

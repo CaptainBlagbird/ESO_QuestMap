@@ -19,16 +19,18 @@ local PIN_TYPE_QUEST_STARTED     = "Quest_started"
 local PIN_TYPE_QUEST_CADWELL     = "Quest_cadwell"
 local PIN_TYPE_QUEST_SKILL       = "Quest_skill"
 -- Transfer to main
-QuestMap.pinType = {
+QuestMap.pinTypes = {
 	uncompleted = PIN_TYPE_QUEST_UNCOMPLETED,
 	completed   = PIN_TYPE_QUEST_COMPLETED,
 	hidden      = PIN_TYPE_QUEST_HIDDEN,
 	started     = PIN_TYPE_QUEST_STARTED,
 	cadwell     = PIN_TYPE_QUEST_CADWELL,
-	skill       = PIN_TYPE_QUEST_SKILL}
+	skill       = PIN_TYPE_QUEST_SKILL
+}
 
 -- Saved variables defaults
 QuestMap.savedVarsDefault = {
+	["iconSet"] = "QuestMap",
 	["pinSize"] = 25,
 	["pinLevel"] = 40,
 	["hiddenQuests"] = {},

@@ -14,12 +14,12 @@ local LMW = LibStub("LibMsgWin-1.0")
 local LMP_FORMAT_ZONE_TWO_STRINGS = false
 local LMP_FORMAT_ZONE_SINGLE_STRING = true
 -- Transfer from init
-local PIN_TYPE_QUEST_UNCOMPLETED = QuestMap.pinType.uncompleted
-local PIN_TYPE_QUEST_COMPLETED   = QuestMap.pinType.completed
-local PIN_TYPE_QUEST_HIDDEN      = QuestMap.pinType.hidden
-local PIN_TYPE_QUEST_STARTED     = QuestMap.pinType.started
-local PIN_TYPE_QUEST_CADWELL     = QuestMap.pinType.cadwell
-local PIN_TYPE_QUEST_SKILL       = QuestMap.pinType.skill
+local PIN_TYPE_QUEST_UNCOMPLETED = QuestMap.pinTypes.uncompleted
+local PIN_TYPE_QUEST_COMPLETED   = QuestMap.pinTypes.completed
+local PIN_TYPE_QUEST_HIDDEN      = QuestMap.pinTypes.hidden
+local PIN_TYPE_QUEST_STARTED     = QuestMap.pinTypes.started
+local PIN_TYPE_QUEST_CADWELL     = QuestMap.pinTypes.cadwell
+local PIN_TYPE_QUEST_SKILL       = QuestMap.pinTypes.skill
 -- Local variables
 local completedQuests = {}
 local startedQuests = {}
@@ -402,15 +402,19 @@ end
 function QuestMap:RefreshPinLayout()
 	LMP:SetLayoutKey(PIN_TYPE_QUEST_UNCOMPLETED, "size", QuestMap.settings.pinSize)
 	LMP:SetLayoutKey(PIN_TYPE_QUEST_UNCOMPLETED, "level", QuestMap.settings.pinLevel)
+	LMP:SetLayoutKey(PIN_TYPE_QUEST_UNCOMPLETED, "texture", QuestMap.iconSets[QuestMap.settings.iconSet][1])
 	LMP:RefreshPins(PIN_TYPE_QUEST_UNCOMPLETED)
 	LMP:SetLayoutKey(PIN_TYPE_QUEST_COMPLETED, "size", QuestMap.settings.pinSize)
 	LMP:SetLayoutKey(PIN_TYPE_QUEST_COMPLETED, "level", QuestMap.settings.pinLevel)
+	LMP:SetLayoutKey(PIN_TYPE_QUEST_COMPLETED, "texture", QuestMap.iconSets[QuestMap.settings.iconSet][2])
 	LMP:RefreshPins(PIN_TYPE_QUEST_COMPLETED)
 	LMP:SetLayoutKey(PIN_TYPE_QUEST_HIDDEN, "size", QuestMap.settings.pinSize)
 	LMP:SetLayoutKey(PIN_TYPE_QUEST_HIDDEN, "level", QuestMap.settings.pinLevel)
+	LMP:SetLayoutKey(PIN_TYPE_QUEST_HIDDEN, "texture", QuestMap.iconSets[QuestMap.settings.iconSet][2])
 	LMP:RefreshPins(PIN_TYPE_QUEST_HIDDEN)
 	LMP:SetLayoutKey(PIN_TYPE_QUEST_STARTED, "size", QuestMap.settings.pinSize)
 	LMP:SetLayoutKey(PIN_TYPE_QUEST_STARTED, "level", QuestMap.settings.pinLevel)
+	LMP:SetLayoutKey(PIN_TYPE_QUEST_STARTED, "texture", QuestMap.iconSets[QuestMap.settings.iconSet][1])
 	LMP:RefreshPins(PIN_TYPE_QUEST_STARTED)
 end
 
@@ -488,10 +492,10 @@ local function OnPlayerActivated(eventCode)
 		tooltip = 1, -- Delete the line above and uncomment this line for Update 6
 	}
 	-- Add new pin types for quests
-	local pinLayout = {level = QuestMap.settings.pinLevel, texture = "QuestMap/icons/pinQuestUncompleted.dds", size = QuestMap.settings.pinSize}
+	local pinLayout = {level = QuestMap.settings.pinLevel, texture = QuestMap.iconSets[QuestMap.settings.iconSet][1], size = QuestMap.settings.pinSize}
 	LMP:AddPinType(PIN_TYPE_QUEST_UNCOMPLETED, function() MapCallbackQuestPins(PIN_TYPE_QUEST_UNCOMPLETED) end, nil, pinLayout, pinTooltipCreator)
 	LMP:AddPinType(PIN_TYPE_QUEST_STARTED, function() MapCallbackQuestPins(PIN_TYPE_QUEST_STARTED) end, nil, pinLayout, pinTooltipCreator)
-	pinLayout = {level = QuestMap.settings.pinLevel, texture = "QuestMap/icons/pinQuestCompleted.dds", size = QuestMap.settings.pinSize}
+	pinLayout = {level = QuestMap.settings.pinLevel, texture = QuestMap.iconSets[QuestMap.settings.iconSet][2], size = QuestMap.settings.pinSize}
 	LMP:AddPinType(PIN_TYPE_QUEST_COMPLETED, function() MapCallbackQuestPins(PIN_TYPE_QUEST_COMPLETED) end, nil, pinLayout, pinTooltipCreator)
 	LMP:AddPinType(PIN_TYPE_QUEST_HIDDEN, function() MapCallbackQuestPins(PIN_TYPE_QUEST_HIDDEN) end, nil, pinLayout, pinTooltipCreator)
 	-- Add map filters

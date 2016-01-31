@@ -26,6 +26,7 @@ libs/LibMsgWin-1.0/LibMsgWin-1.0.lua
 
 ; Resources
 Init.lua
+icons/IconSets.lua
 data/ZoneQuests.lua
 data/ZoneSubzones.lua
 data/QuestNames.lua

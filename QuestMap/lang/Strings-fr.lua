@@ -29,6 +29,8 @@ SafeAddString( QUESTMAP_SLASH_USAGE,           "Veuillez utiliser un argument ap
 SafeAddString( QUESTMAP_SLASH_MAPINFO,         "Veuillez ouvrir la carte en premier.", 1)
 
 -- Settings menu
+SafeAddString( QUESTMAP_MENU_ICON_SET,         "Set d'icônes", 1)
+
 SafeAddString( QUESTMAP_MENU_PIN_SIZE,         "Taille marqueur sur la carte", 1)
 SafeAddString( QUESTMAP_MENU_PIN_SIZE_TT,      "Règle la taille des marqueurs sur la carte (par défaut: "..QuestMap.savedVarsDefault.pinSize..")", 1)
 
