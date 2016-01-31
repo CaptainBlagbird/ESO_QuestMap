@@ -93,15 +93,20 @@ local zones = {
 		},
 	},
 	["alikr/alikr_base"] = {
+		["alikr/bergama_base"] = {
+			zoom_factor = 0.1329798400,
+			x = 0.4657132328,
+			y = 0.5828379393,
+		},
 		["alikr/kozanset_base"] = {
-			zoom_factor = 0.1440145969,
-			y = 0.3787260354,
-			x = 0.7175552249,
+			zoom_factor = 0.1254443526,
+			y = 0.3944286704,
+			x = 0.6922902465,
 		},
 		["alikr/sentinel_base"] = {
-			zoom_factor = 0.2363947630,
-			y = 0.3363027275,
-			x = 0.1152665615,
+			zoom_factor = 0.2059123665,
+			y = 0.3574757278,
+			x = 0.1676649302,
 		},
 	},
 	["glenumbra/glenumbra_base"] = {
