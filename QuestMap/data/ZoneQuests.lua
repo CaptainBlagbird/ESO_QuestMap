@@ -1616,6 +1616,11 @@ local quests = {
 			y = 0.652,
 		},
 		{
+			id = 3963,
+			x = 0.478,
+			y = 0.648,
+		},
+		{
 			id = 3533,
 			x = 0.452,
 			y = 0.425,
@@ -2963,8 +2968,8 @@ local quests = {
 	["bangkorai/cryptoftheexiles_base"] = {
 		{
 			id = 4864,
-			x = 0.815,
-			y = 0.764,
+			x = 0.840,
+			y = 0.670,
 		},
 	},
 	["cyrodiil/ava_whole"] = {
@@ -7904,13 +7909,8 @@ local quests = {
 	["bangkorai/jaggerjaw_base"] = {
 		{
 			id = 4925,
-			x = 0.481,
-			y = 0.712,
-		},
-		{
-			id = 4925,
-			x = 0.476,
-			y = 0.711,
+			x = 0.451,
+			y = 0.474,
 		},
 	},
 	["stormhaven/koeglinvillage_base"] = {
@@ -8586,6 +8586,11 @@ local quests = {
 			id = 4155,
 			x = 0.599,
 			y = 0.704,
+		},
+		{
+			id = 4337,
+			x = 0.621,
+			y = 0.691,
 		},
 	},
 	["greenshade/marbruk_base"] = {
@@ -10357,13 +10362,8 @@ local quests = {
 	["bangkorai/rubblebutte_base"] = {
 		{
 			id = 4887,
-			x = 0.877,
-			y = 0.441,
-		},
-		{
-			id = 4887,
-			x = 0.873,
-			y = 0.434,
+			x = 0.827,
+			y = 0.290,
 		},
 	},
 	["greenshade/rulanyilsfall_base"] = {
@@ -13439,11 +13439,6 @@ local quests = {
 			x = 0.411,
 			y = 0.554,
 		},
-		{
-			id = 4911,
-			x = 0.904,
-			y = 0.240,
-		},
 	},
 	["therift/taarengrav_base"] = {
 		{
@@ -14228,13 +14223,8 @@ local quests = {
 	["bangkorai/murciensclaim_base"] = {
 		{
 			id = 4852,
-			x = 0.368,
-			y = 0.704,
-		},
-		{
-			id = 4852,
-			x = 0.372,
-			y = 0.703,
+			x = 0.470,
+			y = 0.660,
 		},
 	},
 	["rivenspire/tribulationcrypt_base"] = {
@@ -14274,8 +14264,8 @@ local quests = {
 	["bangkorai/trollstoothpick_base"] = {
 		{
 			id = 4863,
-			x = 0.706,
-			y = 0.587,
+			x = 0.355,
+			y = 0.701,
 		},
 	},
 	["coldharbor/vaultsofmadness1_base"] = {
@@ -14860,11 +14850,6 @@ local quests = {
 			id = 4137,
 			x = 0.536,
 			y = 0.625,
-		},
-		{
-			id = 4337,
-			x = 0.516,
-			y = 0.610,
 		},
 		{
 			id = 3997,
