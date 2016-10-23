@@ -324,7 +324,7 @@ local function MapCallbackQuestPins(pinType)
 		-- Get quest name and only continue if string isn't empty
 		local name = QuestMap:GetQuestName(quest.id)
 		if name ~= "" then
-			-- Get quest type info
+			-- Get quest type info and level
 			local isSkillQuest, isCadwellQuest = QuestMap:GetQuestType(quest.id)
 			
 			-- Create table with tooltip info
@@ -546,7 +546,14 @@ local function OnPlayerActivated(eventCode)
 	UpdateQuestData()
 	
 	-- Register slash commands and link function
-	SLASH_COMMANDS["/qm"] = function(str) SetQuestsInZoneHidden(str); QuestMap:RefreshPins() end
+	SLASH_COMMANDS["/qm"] = function(str)
+            SetQuestsInZoneHidden(str)
+            QuestMap:RefreshPins()
+            -- If the list window was open, update it too by running the function again without argument
+            if not ListUI:IsHidden() then
+                DisplayListUI()
+            end
+        end
 	SLASH_COMMANDS["/qmlist"] = DisplayListUI
 	SLASH_COMMANDS["/qmgetpos"] = GetPlayerPos
 	
