@@ -31,6 +31,7 @@ data/ZoneQuests.lua
 data/ZoneSubzones.lua
 data/QuestNames.lua
 data/QuestTypes.lua
+data/QuestLevels.lua
 lang/Strings.lua
 
 ; Language overwrite

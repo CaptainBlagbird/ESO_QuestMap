@@ -103,6 +103,16 @@ local function p(s)
 	d(s)
 end
 
+-- Function for formattting the level string
+local function formatLevel(level)
+    if level then
+        level = string.format("%02d", level)
+    else
+        level = "??"
+    end
+    return "|c888888["..level.."]|r "
+end
+
 -- Function to get the location/position of the player by slash command for reporting new quest givers / bugs
 local function GetPlayerPos()
 	-- Get location info and format coordinates
@@ -200,7 +210,8 @@ local function DisplayListUI(arg)
 		addQuestToList = function(quest)
 			local name = QuestMap:GetQuestName(quest.id)
 			if name ~= "" and completedQuests[quest.id] then
-				list[quest.id] = name
+                local level = QuestMap:GetQuestLevel(quest.id)
+				list[quest.id] = formatLevel(level)..name
 			end
 		end
 		
@@ -210,7 +221,8 @@ local function DisplayListUI(arg)
 		addQuestToList = function(quest)
 			local name = QuestMap:GetQuestName(quest.id)
 			if name ~= "" and not completedQuests[quest.id] then
-				list[quest.id] = name
+                local level = QuestMap:GetQuestLevel(quest.id)
+				list[quest.id] = formatLevel(level)..name
 			end
 		end
 		
@@ -220,7 +232,8 @@ local function DisplayListUI(arg)
 		addQuestToList = function(quest)
 			local name = QuestMap:GetQuestName(quest.id)
 			if name ~= "" and QuestMap.settings.hiddenQuests[quest.id] then
-				list[quest.id] = name
+                local level = QuestMap:GetQuestLevel(quest.id)
+				list[quest.id] = formatLevel(level)..name
 			end
 		end
 		
@@ -230,7 +243,8 @@ local function DisplayListUI(arg)
 		addQuestToList = function(quest)
 			local name = QuestMap:GetQuestName(quest.id)
 			if name ~= "" and startedQuests[quest.id] then
-				list[quest.id] = name
+                local level = QuestMap:GetQuestLevel(quest.id)
+				list[quest.id] = formatLevel(level)..name
 			end
 		end
 		
@@ -241,7 +255,8 @@ local function DisplayListUI(arg)
 			local name = QuestMap:GetQuestName(quest.id)
 			local isSkillQuest, isCadwellQuest = QuestMap:GetQuestType(quest.id)
 			if name ~= "" and isCadwellQuest then
-				list[quest.id] = name
+                local level = QuestMap:GetQuestLevel(quest.id)
+				list[quest.id] = formatLevel(level)..name
 			end
 		end
 		
@@ -252,7 +267,8 @@ local function DisplayListUI(arg)
 			local name = QuestMap:GetQuestName(quest.id)
 			local isSkillQuest, isCadwellQuest = QuestMap:GetQuestType(quest.id)
 			if name ~= "" and isSkillQuest then
-				list[quest.id] = name
+                local level = QuestMap:GetQuestLevel(quest.id)
+				list[quest.id] = formatLevel(level)..name
 			end
 		end
 		
@@ -326,13 +342,14 @@ local function MapCallbackQuestPins(pinType)
 		if name ~= "" then
 			-- Get quest type info and level
 			local isSkillQuest, isCadwellQuest = QuestMap:GetQuestType(quest.id)
+            local level = QuestMap:GetQuestLevel(quest.id)
 			
 			-- Create table with tooltip info
 			local pinInfo = {}
 			if isFromSubzone then
-				pinInfo[1] = "|cDDDDDD"..name
+				pinInfo[1] = formatLevel(level).."|cDDDDDD"..name
 			else
-				pinInfo[1] = "|cFFFFFF"..name
+				pinInfo[1] = formatLevel(level).."|cFFFFFF"..name
 			end
 			-- Also store quest id (wont be visible in the tooltib because key is not an index number)
 			pinInfo.id = quest.id
