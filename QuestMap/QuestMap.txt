@@ -43,6 +43,12 @@ Settings.lua
 Main.lua
 
 
+; Special thanks
+; - svan:           French translation
+; - Provision:      French translation
+; - Sir Quackberry: Cadwell & Skill quest types; Quest locations update
+; - apalma200:      Wrothgar quests
+
 
 ; This Add-on is not created by, affiliated with or sponsored by ZeniMax
 ; Media Inc. or its affiliates. The Elder Scrolls® and related logos are
