@@ -19,9 +19,9 @@ local cadwell = Set { 465, 467, 737, 736, 1341, 1346, 1437, 1529, 1536, 1541, 15
 -- List by Sir Quackberry, thank you!
 
 function QuestMap:GetQuestType(id)
-	if type(id) == "number" then
-		local s = skill[id] or false
-		local c = cadwell[id] or false
-		return s, c
-	end
+    if type(id) == "number" then
+        local s = skill[id] or false
+        local c = cadwell[id] or false
+        return s, c
+    end
 end
