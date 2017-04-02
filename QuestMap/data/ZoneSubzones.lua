@@ -318,6 +318,18 @@ local zones = {
 			zoom_factor = 0.2375039756,
 		},
 	},
+	["wrothgar/wrothgar_base"] = {
+		["wrothgar/orsinium_base"] = {
+			zoom_factor = 0.1917142868,
+			x = 0.6082857251,
+			y = 0.5285714269,
+		},
+		["wrothgar/morkul_base"] = {
+			zoom_factor = 0.1026799977,
+			x = 0.4524457157,
+			y = 0.4147485793,
+		},
+	},
 }
 
 function QuestMap:GetSubzoneList(zone)
