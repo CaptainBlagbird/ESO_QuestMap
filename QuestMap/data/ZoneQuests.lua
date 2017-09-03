@@ -2920,6 +2920,11 @@ local quests = {
             x = 0.653,
             y = 0.669,
         },
+        {
+            id = 5935,
+            x = 0.604,
+            y = 0.590,
+        },
     },
     ["stonefalls/crowswood_base"] = {
         {
@@ -15012,6 +15017,11 @@ local quests = {
             id = 2436,
             x = 0.210,
             y = 0.321,
+        },
+        {
+            id = 5935,
+            x = 0.486,
+            y = 0.111,
         },
     },
     ["stormhaven/wayrestsewers_base"] = {
