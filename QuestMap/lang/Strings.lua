@@ -29,6 +29,8 @@ local strings = {
     QUESTMAP_SLASH_USAGE          = "Please use an argument after the command:\n 'hide' - Hide all quests on the current map\n 'unhide' - Unhide all quests on the current map",
     QUESTMAP_SLASH_MAPINFO        = "Please open the map first.",
     
+    QUESTMAP_LIB_REQUIRED         = "not installed.",
+    
     -- Settings menu
     QUESTMAP_MENU_ICON_SET        = "Icon set",
     

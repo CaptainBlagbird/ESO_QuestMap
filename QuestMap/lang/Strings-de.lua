@@ -28,6 +28,8 @@ SafeAddString( QUESTMAP_QUEST_SUBFILTER,       "Subfilter", 1)
 SafeAddString( QUESTMAP_SLASH_USAGE,           "Bitte verwende ein Argument nach dem Befehl:\n 'hide' - Alle quests in der aktuellen Karte ausblenden\n 'unhide' - Alle quests in der aktuellen Karte einblenden", 1)
 SafeAddString( QUESTMAP_SLASH_MAPINFO,         "Bitte erst die Karte öffnen.", 1)
 
+SafeAddString( QUESTMAP_LIB_REQUIRED,          "nicht installiert/aktiviert.", 1)
+
 -- Settings menu
 SafeAddString( QUESTMAP_MENU_ICON_SET,         "Icon-Set", 1)
 

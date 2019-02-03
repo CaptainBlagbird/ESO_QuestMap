@@ -28,6 +28,8 @@ SafeAddString( QUESTMAP_QUEST_SUBFILTER,       "Sous-filtre", 1)
 SafeAddString( QUESTMAP_SLASH_USAGE,           "Veuillez utiliser un argument après la commande:\n 'hide' - Cacher toutes les quêtes sur la carte actuelle\n 'unhide' - Rendre visible toutes les quêtes sur la carte actuelle", 1)
 SafeAddString( QUESTMAP_SLASH_MAPINFO,         "Veuillez ouvrir la carte en premier.", 1)
 
+SafeAddString( QUESTMAP_LIB_REQUIRED,          "n'est pas installée/activée.", 1)
+
 -- Settings menu
 SafeAddString( QUESTMAP_MENU_ICON_SET,         "Set d'icônes", 1)
 

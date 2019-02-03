@@ -153,9 +153,11 @@ CALLBACK_MANAGER:RegisterCallback("LAM-PanelControlsCreated", CreateTexture)
 -- Wait until all addons are loaded
 local function OnPlayerActivated(event)
     if LibStub ~= nil then
-        local LAM = LibStub("LibAddonMenu-2.0")
-        LAM:RegisterAddonPanel(QuestMap.idName.."_Options", panelData)
-        LAM:RegisterOptionControls(QuestMap.idName.."_Options", optionsTable)
+        local LAM = LibStub("LibAddonMenu-2.0", true)
+        if LAM ~= nil then
+            LAM:RegisterAddonPanel(QuestMap.idName.."_Options", panelData)
+            LAM:RegisterOptionControls(QuestMap.idName.."_Options", optionsTable)
+        end
     end
     EVENT_MANAGER:UnregisterForEvent(QuestMap.idName.."_Options", EVENT_PLAYER_ACTIVATED)
 end

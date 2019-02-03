@@ -7,8 +7,8 @@ https://github.com/CaptainBlagbird
 --]]
 
 -- Libraries
-local LMP = LibStub("LibMapPins-1.0")
-local LMW = LibStub("LibMsgWin-1.0")
+local LMP = LibStub("LibMapPins-1.0", false)
+local LMW = LibStub("LibMsgWin-1.0", true)
 
 -- Constants
 local LMP_FORMAT_ZONE_TWO_STRINGS = false
@@ -29,13 +29,16 @@ local zoneQuests = {}
 local subzoneQuests = {}
 
 -- UI
-local ListUI = LMW:CreateMsgWindow(QuestMap.idName.."_ListUI", " ")
-ListUI:SetAnchor(TOPLEFT, nil, nil, 50, 200)
-ListUI:SetDimensions(400, 600)
-ListUI:SetHidden(true)
-local btn = WINDOW_MANAGER:CreateControlFromVirtual(ListUI:GetName().."Close", ListUI, "ZO_CloseButton")
-btn:SetAnchor(TOPRIGHT, nil, nil, -7, 7)
-btn:SetHandler("OnClicked", function(self) self:GetParent():SetHidden(true) end)
+local ListUI
+if LMW ~= nil then
+    ListUI = LMW:CreateMsgWindow(QuestMap.idName.."_ListUI", " ")
+    ListUI:SetAnchor(TOPLEFT, nil, nil, 50, 200)
+    ListUI:SetDimensions(400, 600)
+    ListUI:SetHidden(true)
+    local btn = WINDOW_MANAGER:CreateControlFromVirtual(ListUI:GetName().."Close", ListUI, "ZO_CloseButton")
+    btn:SetAnchor(TOPRIGHT, nil, nil, -7, 7)
+    btn:SetHandler("OnClicked", function(self) self:GetParent():SetHidden(true) end)
+end
 
 
 -- Library hack to be able to detect when a map pin filter gets unchecked (overwrite RemovePins function)
@@ -189,6 +192,8 @@ end
 
 -- Function for displaying window with the quest list
 local function DisplayListUI(arg)
+    if ListUI == nil then return end
+    
     -- Default option
     if arg == "" or arg == nil then arg = QuestMap.settings.lastListArg end
     
@@ -320,7 +325,7 @@ local function MapCallbackQuestPins(pinType)
     if zone ~= lastZone then
         UpdateZoneQuestData(zone)
         -- If the list window was open, update it by running the function again without argument
-        if not ListUI:IsHidden() then
+        if ListUI ~= nil and not ListUI:IsHidden() then
             DisplayListUI()
         end
     end
@@ -568,11 +573,17 @@ local function OnPlayerActivated(eventCode)
             SetQuestsInZoneHidden(str)
             QuestMap:RefreshPins()
             -- If the list window was open, update it too by running the function again without argument
-            if not ListUI:IsHidden() then
+            if ListUI ~= nil and not ListUI:IsHidden() then
                 DisplayListUI()
             end
         end
-    SLASH_COMMANDS["/qmlist"] = DisplayListUI
+    if LMW == nil then
+        SLASH_COMMANDS["/qmlist"] = function()
+            p("LibMsgWin-1.0 "..GetString(QUESTMAP_LIB_REQUIRED))
+        end
+    else
+        SLASH_COMMANDS["/qmlist"] = DisplayListUI
+    end
     SLASH_COMMANDS["/qmgetpos"] = GetPlayerPos
     
     EVENT_MANAGER:UnregisterForEvent(QuestMap.idName, EVENT_PLAYER_ACTIVATED)
