@@ -320,14 +320,36 @@ local zones = {
     },
     ["wrothgar/wrothgar_base"] = {
         ["wrothgar/orsinium_base"] = {
-            zoom_factor = 0.1917142868,
             x = 0.6082857251,
             y = 0.5285714269,
+            zoom_factor = 0.1917142868,
         },
         ["wrothgar/morkul_base"] = {
-            zoom_factor = 0.1026799977,
             x = 0.4524457157,
             y = 0.4147485793,
+            zoom_factor = 0.1026799977,
+        },
+    },
+    ["summerset/summerset_base"] = {
+        ["summerset/alinor_base"] = {
+            x = 0.2424361110,
+            y = 0.5480698347,
+            zoom_factor = 0.1036754847,
+        },
+        ["summerset/sunhold_base"] = {
+            x = 0.3514192700,
+            y = 0.6601553559,
+            zoom_factor = 0.0585562289,
+        },
+        ["summerset/shimmerene_base"] = {
+            x = 0.5313938856,
+            y = 0.3680678904,
+            zoom_factor = 0.1482407451,
+        },
+        ["summerset/lillandrill_base"] = {
+            x = 0.1188169122,
+            y = 0.3517273962,
+            zoom_factor = 0.0896723717,
         },
     },
 }
