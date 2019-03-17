@@ -359,6 +359,13 @@ local zones = {
             zoom_factor = 0.3572255075,
         },
     },
+    ["thievesguild/hewsbane_base"] = {
+        ["thievesguild/abahslanding_base"] = {
+            x = 0.4762502909,
+            y = 0.2592564523,
+            zoom_factor = 0.3547124267,
+        },
+    },
 }
 
 function QuestMap:GetSubzoneList(zone)
