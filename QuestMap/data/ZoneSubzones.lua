@@ -352,6 +352,13 @@ local zones = {
             zoom_factor = 0.0896723717,
         },
     },
+    ["clockwork/clockwork_base"] = {
+        ["clockwork/brassfortress_base"] = {
+            x = 0.3214252889,
+            y = 0.1615778059,
+            zoom_factor = 0.3572255075,
+        },
+    },
 }
 
 function QuestMap:GetSubzoneList(zone)
