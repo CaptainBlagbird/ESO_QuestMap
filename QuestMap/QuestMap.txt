@@ -1,7 +1,7 @@
 ## Title: Quest Map |c555555v1.9|r
 ## Version: 1.9
 ## Author: |c70C0DECaptainBlagbird|r
-## APIVersion: 100025
+## APIVersion: 100026
 ## Description: Displays quest givers on the world map
 ## SavedVariables: QuestMapSettings
 ## DependsOn: LibStub LibMapPins-1.0
